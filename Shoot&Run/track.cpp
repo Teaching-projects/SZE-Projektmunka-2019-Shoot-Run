@@ -1,6 +1,21 @@
 #include "track.h"
 
-Track::Track()
+string Track::getName() const
+{
+    return name;
+}
+
+vector<Coord *> Track::getCoordinates() const
+{
+    return coordinates;
+}
+
+vector<datetime *> Track::getDates() const
+{
+    return dates;
+}
+
+Track::Track(string name):name(name)
 {
 
 }
@@ -15,7 +30,7 @@ void Track::addCoord(double longitude, double latitude)
 void Track::kiir()
 {
     for(unsigned int i=0;i<coordinates.size();i++){
-        cout<<coordinates[i]->getLongitude()<<" "<<coordinates[i]->getLatitude()<<" "<<std::endl;
+        cout<<coordinates[i]->getLatitude()<<" "<<coordinates[i]->getLongitude()<<" "<<std::endl;
         dates[i]->print();
     }
 }

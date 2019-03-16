@@ -37,6 +37,7 @@ public:
         unsigned int getHour() const;
         unsigned int getMinute() const;
         unsigned int getSecond() const;
+        unsigned int durationinseconds() const;
         void setHour(unsigned int value);
         void setMinute(unsigned int value);
         void setSecond(unsigned int value);

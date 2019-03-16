@@ -43,6 +43,11 @@ unsigned int datetime::getSecond() const
     return second;
 }
 
+unsigned int datetime::durationinseconds() const
+{
+    return (3600*this->hour+60*minute+second);
+}
+
 void datetime::setHour(unsigned int value)
 {
     hour = value;

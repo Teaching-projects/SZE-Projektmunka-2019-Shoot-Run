@@ -13,14 +13,13 @@ class image
 {
 private:
     //unsigned int id;
-    //datetime date_;
+    datetime date_;
     Coord coord;
     //unsigned int photographer_id;
     //bool accepted=0;
     string path;
 
 public:
-    datetime date_;
     image(string path):path(path),date_(0,0,0,0,0,0),coord(0.0,0.0){
         this->load();
     }
@@ -33,7 +32,6 @@ public:
         this->date_.setMinute(minute);
         this->date_.setSecond(second);
     }
-    //cout<<path;
     void load(){
         char *cstr = new char[this->path.length() + 1];
         strcpy(cstr, this->path.c_str());
@@ -71,8 +69,24 @@ public:
         this->date_.print();
     }
 
-    };
+    Coord getCoord() const
+    {
+        return coord;
+    }
+    datetime getDate() const;
+    string getPath() const;
+};
 
 
 
 #endif // IMAGE_H
+
+string image::getPath() const
+{
+return path;
+}
+
+datetime image::getDate() const
+{
+    return date_;
+}
