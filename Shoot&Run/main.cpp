@@ -11,7 +11,7 @@ int main()
 {
     QString ido;
     std::string stdido;
-    Track t("Ricsi");
+    Track t("XY versenyzo");
     QFile file("track.gpx");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "File open error:" << file.errorString();
@@ -42,13 +42,13 @@ int main()
     std::string path;
     std::cin>>path;
     image a(path);
-
+    a.print();
+    cout<<endl;
     unsigned int j=0;
     for(auto i:t.getDates()){
         if((i->durationinseconds()>a.getDate().durationinseconds()-7) && (i->durationinseconds()<a.getDate().durationinseconds()+7)){
-            if(t.getCoordinates()[j]->tav(a.getCoord())<50){
-                cout<<t.getName()<<" rajt van "<<a.getPath()<<" kepen"<<endl;
-                t.getCoordinates()[j]->print();
+            if(t.getCoordinates()[j]->distance(a.getCoord())<50){
+                cout<<t.getName()<<" rajt van "<<a.getPath()<<" kepen ";
                 i->print();
             }
         }

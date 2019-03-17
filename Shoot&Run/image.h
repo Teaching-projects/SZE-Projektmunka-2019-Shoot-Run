@@ -64,8 +64,9 @@ public:
         unsigned int second=stoul(stdido.substr(17,2));
         this->addDate(year,month,day,hour,minute,second);
     }
-    void kiir(){
-        this->coord.print();
+    void print(){
+        //this->coord.print();
+        cout<<"Kep keszitesenek a datuma: ";
         this->date_.print();
     }
 

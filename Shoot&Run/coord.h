@@ -2,7 +2,6 @@
 #define COORD_H
 #include <iomanip>
 #include <iostream>
-#include <math.h>
 #include <cmath>
 #define earthRadiusKm 6371.0
 
@@ -26,7 +25,7 @@ public:
     double rad2deg(double rad) {
       return (rad * 180 / M_PI);
     }
-    double tav(Coord other) {
+    double distance(Coord other) {
       double lat1r, lon1r, lat2r, lon2r, u, v;
       lat1r = deg2rad(this->latitude);
       lon1r = deg2rad(this->longitude);

@@ -25,5 +25,5 @@ Coord::Coord(double longitude, double latitude):longitude(longitude),latitude(la
 
 }
 void Coord::print(){
-    cout<<setprecision(8)<<getLatitude()<<"\t"<<setprecision(8)<<getLongitude()<<endl;
+    cout<<setprecision(8)<<getLatitude()<<"\t"<<getLongitude()<<endl;
 }
