@@ -111,26 +111,26 @@ void Event::submitContact()
         if (!contacts.contains(name)) {
             contacts.insert(name, date);
             QMessageBox::information(this, tr("Add Successful"),
-                tr("\"%1\" has been added to your address book.").arg(name));
+                tr("\"%1\" has been added to your event list.").arg(name));
         } else {
             QMessageBox::information(this, tr("Add Unsuccessful"),
-                tr("Sorry, \"%1\" is already in your address book.").arg(name));
+                tr("Sorry, \"%1\" is already in your event list.").arg(name));
         }
     } else if (currentMode == EditingMode) {
 
         if (oldName != name) {
             if (!contacts.contains(name)) {
                 QMessageBox::information(this, tr("Edit Successful"),
-                    tr("\"%1\" has been edited in your address book.").arg(oldName));
+                    tr("\"%1\" has been edited in your event list.").arg(oldName));
                 contacts.remove(oldName);
                 contacts.insert(name, date);
             } else {
                 QMessageBox::information(this, tr("Edit Unsuccessful"),
-                    tr("Sorry, \"%1\" is already in your address book.").arg(name));
+                    tr("Sorry, \"%1\" is already in your event list.").arg(name));
             }
         } else if (oldDate != date) {
             QMessageBox::information(this, tr("Edit Successful"),
-                tr("\"%1\" has been edited in your address book.").arg(name));
+                tr("\"%1\" has been edited in your event list.").arg(name));
             contacts[name] = date;
         }
     }
@@ -163,7 +163,7 @@ void Event::removeContact()
             contacts.remove(name);
 
             QMessageBox::information(this, tr("Remove Successful"),
-                tr("\"%1\" has been removed from your address book.").arg(name));
+                tr("\"%1\" has been removed from your event list.").arg(name));
         }
     }
 
@@ -216,7 +216,7 @@ void Event::findContact()
             dateLine->setDate(contacts.value(contactName));
         } else {
             QMessageBox::information(this, tr("Contact Not Found"),
-                tr("Sorry, \"%1\" is not in your address book.").arg(contactName));
+                tr("Sorry, \"%1\" is not in your event list.").arg(contactName));
             return;
         }
     }
@@ -282,7 +282,7 @@ void Event::saveToFile()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
         tr("Save Events"), "",
-        tr("Address Book (*.txt);;All Files (*)"));
+        tr("Event List (*.txt);;All Files (*)"));
 
     if (fileName.isEmpty())
         return;
@@ -305,8 +305,8 @@ void Event::saveToFile()
 void Event::loadFromFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Open Address Book"), "",
-        tr("Address Book (*.txt);;All Files (*)"));
+        tr("Open Event List"), "",
+        tr("Event List (*.txt);;All Files (*)"));
 
     if (fileName.isEmpty())
         return;
