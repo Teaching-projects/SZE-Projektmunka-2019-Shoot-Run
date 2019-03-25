@@ -2,29 +2,35 @@
 #define TARDIS_H
 #include <odb/core.hxx>
 #include <odb/tr1/memory.hxx>
+#include <odb/tr1/lazy-ptr.hxx>
 #include <string>
-#include<iostream>//torold
-using std::tr1::shared_ptr;
+#include<iostream>
+class track;
+typedef ::track track_type;
 
 #pragma db object
 class tardis
 {
 private:
-    friend class odb::access;
-#pragma db id auto type("MEDIUMINT(8)")
+ friend class odb::access;
+#pragma db id auto
     unsigned int tardis_id;
-#pragma db type("MEDIUMINT(8)")
-    unsigned int track_id;
-#pragma db type("DOUBLE")
+#pragma db not_null
+	odb::tr1::lazy_shared_ptr<track_type> track_tardis_;
 	double       tardis_longitude;
-#pragma db type("DOUBLE")
 	double       tardis_latitude;
-#pragma db type("varchar(50)")//átír addig semmi értelme
     std::string time;
 public:
+const odb::tr1::lazy_shared_ptr<track_type>& track() const { return track_tardis_; }
+void track(odb::tr1::lazy_shared_ptr<track_type> track) { track_tardis_ = track; }
+
     tardis(){}
-    tardis(unsigned int,double,double,std::string);
-	void ki() { std::cout << track_id; }//torols
+    tardis(odb::tr1::lazy_shared_ptr<track_type>,double,double,std::string);
+
 };
+
+#ifdef ODB_COMPILER
+#include "track.h"
+#endif
 
 #endif // TARDIS_H

@@ -1,4 +1,5 @@
 #include "track.h"
 
-track::track(unsigned int event_id, unsigned int user_id)
-    :event_id(event_id),user_id(user_id){}
+track::track(odb::tr1::lazy_weak_ptr<event_type> event_track_, odb::tr1::lazy_shared_ptr<user_type> user_track_):
+	event_track_(event_track_), user_track_(user_track_)
+{}

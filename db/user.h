@@ -2,39 +2,39 @@
 #define USER_H
 #include <odb/core.hxx>
 #include <odb/tr1/memory.hxx>
+#include <odb/tr1/lazy-ptr.hxx>
 #include <string>
 #include <vector>
 
-class event;
-class image;
-class track;
+class event;class image;class track;class tardis;
+typedef std::vector<odb::tr1::lazy_weak_ptr<track> > tracks;
 
 #pragma db object
 class user
 {
+public:
+	typedef ::tracks tracks_type;
+	const tracks_type& tracks() const { return tracks_; }
+	tracks_type& tardiss() { return tracks_; }
+	user() {}
+	user(std::string, std::string, std::string, std::string, std::string);
+
 private:
     friend class odb::access;
-#pragma db id auto type("MEDIUMINT(8)")
+#pragma db id auto
     unsigned int user_id;
-#pragma db type("VARCHAR(20)")
     std::string  user_name;
-#pragma db type("VARCHAR(30)")
     std::string  password;
-#pragma db type("VARCHAR(50)")
     std::string  first_name;
-#pragma db type("VARCHAR(50)")
     std::string  last_name;
-#pragma db type("VARCHAR(100)")
     std::string  email;
-public:
-    user(){}
-    user(std::string,std::string,std::string,std::string,std::string);
-/*#pragma db value_not_null unordered
-	std::vector<std::tr1::shared_ptr<image>> images_;
-#pragma db value_not_null unordered
-	std::vector<std::tr1::shared_ptr<track>> tracks_;
-#pragma db value_not_null unordered
-	std::vector<std::tr1::shared_ptr<event>> events_;*/
+#pragma db value_not_null inverse(user_track_)
+	tracks_type tracks_;
+
 };
+#ifdef ODB_COMPILER
+#include "track.h"
+#include "image.h"
+#endif
 
 #endif // USER_H
