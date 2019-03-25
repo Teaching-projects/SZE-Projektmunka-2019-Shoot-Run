@@ -5,6 +5,7 @@
 #include <odb/tr1/lazy-ptr.hxx>
 #include <string>
 #include<iostream>
+
 class track;
 typedef ::track track_type;
 
@@ -15,18 +16,18 @@ private:
  friend class odb::access;
 #pragma db id auto
     unsigned int tardis_id;
-#pragma db not_null
+#pragma db not_null //track
 	odb::tr1::lazy_shared_ptr<track_type> track_tardis_;
 	double       tardis_longitude;
 	double       tardis_latitude;
     std::string time;
 public:
-const odb::tr1::lazy_shared_ptr<track_type>& track() const { return track_tardis_; }
-void track(odb::tr1::lazy_shared_ptr<track_type> track) { track_tardis_ = track; }
+	//track
+	const odb::tr1::lazy_shared_ptr<track_type>& track() const { return track_tardis_; }
+	void track(odb::tr1::lazy_shared_ptr<track_type> track) { track_tardis_ = track; }
 
     tardis(){}
     tardis(odb::tr1::lazy_shared_ptr<track_type>,double,double,std::string);
-
 };
 
 #ifdef ODB_COMPILER
