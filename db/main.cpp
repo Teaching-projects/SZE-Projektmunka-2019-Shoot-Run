@@ -1,7 +1,4 @@
 #include <iostream>
-#include <odb/transaction.hxx>
-#include <odb/database.hxx>
-#include <odb/mysql/database.hxx>
 #include <memory>
 #include <odb/session.hxx>
 #include <odb/transaction.hxx>
@@ -15,6 +12,7 @@
 #include "tardis-odb.hxx"
 #include "track.h"
 #include "track-odb.hxx"
+#include "database.h"
 
 double ran(double const range_min, double const range_max)
 {
@@ -22,6 +20,50 @@ double ran(double const range_min, double const range_max)
 	static double const i_to_d53(1.0 / 9007199254740992.0);
 	unsigned long long const r((unsigned long long(rand()) | (unsigned long long(rand()) << 15) | (unsigned long long(rand()) << 30) | (unsigned long long(rand()) << 45)) & mant_mask53);
 	return range_min + i_to_d53 * double(r)*(range_max - range_min);
+}
+
+int user_exist(std::string user_name, std::string email) {
+	typedef odb::query<user> query;
+	std::auto_ptr<odb::core::database> db = create_database();
+	std::shared_ptr<user> exists = db->query_one<user>(query::user_name == user_name || query::email == email);
+	if (exists.get() == 0)
+		return 0;
+	return 1;
+}
+int user_correct(std::string user_name, std::string password) {
+	typedef odb::query<user> query;
+	std::auto_ptr<odb::core::database> db = create_database();
+	std::shared_ptr<user> exists = db->query_one<user>(query::user_name == user_name && query::password == password);
+	if (exists.get() == 0) {
+		return 0;
+	}
+	return 1;
+}
+int registration(std::string user_name, std::string password, std::string first_name, std::string last_name, std::string email)
+{
+	std::auto_ptr<odb::core::database> db = create_database();
+	odb::session s;
+	odb::core::transaction t(db->begin());
+	std::tr1::shared_ptr<user> user_new(new user(user_name, password, first_name, last_name, email));
+	if (!user_exist(user_name, email)){
+		db->persist(user_new);
+		t.commit();
+		std::cout << "\nUser registered" << std::endl;
+		return 1;
+	}
+	std::cout << "\nUser name or email address already taken!" << std::endl;
+	return 0;
+};
+int login(std::string user_name, std::string password) {
+	std::auto_ptr<odb::core::database> db = create_database();
+	odb::session s;
+	odb::core::transaction t(db->begin());
+	if (user_correct(user_name, password)) {
+		std::cout << "\nValid name and password!" << std::endl;
+		return 1;
+	}
+	std::cout << "\nWrong name or password!" << std::endl;
+	return 0;
 }
 
 
@@ -36,10 +78,12 @@ int main()
 	tardis	-track-				track		 longitude		latitude		time
 	*/
 	
+	std::auto_ptr<odb::core::database> db = create_database();
+	//std::auto_ptr<odb::core::database> db = create_database();
+	//odb::session s;
+	//odb::core::transaction t(db->begin());
 
-	std::auto_ptr<odb::core::database> db(new odb::mysql::database("root", "", "runner"));
-	odb::session s;
-	std::tr1::shared_ptr<user> user1(new user("ati703",       "testPW", "Attila", "Lebbenszki", "lebbenszkiattilagmailcom"));
+	/*std::tr1::shared_ptr<user> user1(new user("ati703",       "testPW", "Attila", "Lebbenszki", "lebbenszkiattilagmailcom"));
 	std::tr1::shared_ptr<user> user2(new user("patrikkocsis", "testPW", "Patrik", "Patrik",     "patrikkocsisgmailcom"));
 	std::tr1::shared_ptr<event> event1(new event("first"));
 	std::tr1::shared_ptr<event> event2(new event("second"));
@@ -77,16 +121,19 @@ int main()
 	track2->tardises().push_back(t4);	track2->tardises().push_back(t5);
 	track3->tardises().push_back(t6);	track3->tardises().push_back(t7);	track3->tardises().push_back(t8);
 
-	odb::core::transaction t(db->begin());
+
 
 	db->persist(user1);		db->persist(user2);
 	db->persist(event1);	db->persist(event2); 	db->persist(event3);
 	db->persist(image1);	db->persist(image2);	db->persist(image3);	db->persist(image4);	db->persist(image5);	db->persist(image6);
 	db->persist(track1);	db->persist(track2);	db->persist(track3);
 	db->persist(t1);		db->persist(t2);		db->persist(t3);		db->persist(t4);		db->persist(t5);		db->persist(t6);		db->persist(t7);		db->persist(t8);
+*/
 
 
-
-	t.commit();
+	registration("tejt", "testPW", "Attila", "Lebbenszki", "usedemail");
+	logged_in = login("tejt", "testPW");
+	//t.commit();
     return 0;
 }
+
