@@ -44,6 +44,12 @@ public:
         bool operator == ( const datetime &other){
             return (year==other.year and month==other.month and day==other.day and hour==other.hour and minute==other.minute and second==other.second);
         }
+        bool operator > (const datetime& other) {
+          return this->durationinseconds() > other.durationinseconds();
+        }
+        bool operator < (const datetime& other) {
+          return this->durationinseconds() < other.durationinseconds();
+        }
 };
 
 

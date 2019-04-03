@@ -23,6 +23,9 @@ public:
     image(string path):path(path),date_(0,0,0,0,0,0),coord(0.0,0.0){
         this->load();
     }
+    image(string path,unsigned int y,unsigned int m,unsigned int d,unsigned int h,unsigned int min,unsigned int s,double lon, double lat):path(path),date_(y,m,d,h,min,s),coord(lat,lon){
+        //this->load();
+    }
 
     void addDate(unsigned int year,unsigned int month,unsigned int day,unsigned int hour,unsigned int minute ,unsigned int second){
         this->date_.setYear(year);
@@ -76,18 +79,16 @@ public:
     }
     datetime getDate() const;
     string getPath() const;
+    bool operator > (const image& other) {
+      return this->getDate().durationinseconds()>other.getDate().durationinseconds();
+    }
+    bool operator < (const image& other) {
+      return this->getDate().durationinseconds()<other.getDate().durationinseconds();
+    }
 };
 
 
 
 #endif // IMAGE_H
 
-string image::getPath() const
-{
-return path;
-}
 
-datetime image::getDate() const
-{
-    return date_;
-}
