@@ -19,9 +19,7 @@ SOURCES += \
     coord.cpp \
     date.cpp \
     exif.cpp \
-    track.cpp \
-    event.cpp \
-    image.cpp
+    track.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -30,8 +28,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     track.gpx \
-    android.jpg \
-    track2.gpx
+    android.jpg
 
 SUBDIRS += \
     full.pro
@@ -41,6 +38,4 @@ HEADERS += \
     date.h \
     exif.h \
     image.h \
-    track.h \
-    event.h \
-    image.h
+    track.h
