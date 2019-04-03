@@ -24,12 +24,15 @@ public:
 	tracks_type& tracks() { return tracks_; }
 
 	user() {}
-	user(std::string, std::string, std::string, std::string, std::string);
+	user(std::string, std::string, std::string, std::string, std::string, std::string);
+	std::string getRegistretionDate();
+	std::string getPassword();
 private:
     friend class odb::access;
 #pragma db id auto
     unsigned int user_id;
 	std::string  user_name, password, first_name, last_name, email;
+	std::string registration_date;
 #pragma db value_not_null inverse(user_image_) //image
 	images_type images_;
 #pragma db value_not_null inverse(user_track_) //track

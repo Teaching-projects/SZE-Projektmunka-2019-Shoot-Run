@@ -1,4 +1,5 @@
 #include <iostream>
+#include <odb/transaction.hxx>
 #include <memory>
 #include <odb/session.hxx>
 #include <odb/transaction.hxx>
@@ -13,6 +14,8 @@
 #include "track.h"
 #include "track-odb.hxx"
 #include "database.h"
+#include <CkCrypt2.h>
+
 
 double ran(double const range_min, double const range_max)
 {
@@ -22,6 +25,35 @@ double ran(double const range_min, double const range_max)
 	return range_min + i_to_d53 * double(r)*(range_max - range_min);
 }
 
+std::string currentDateTime() {//under construct
+	time_t     now = time(0);
+	struct tm  tstruct;
+	char       buf[80];
+	tstruct = *localtime(&now);
+	strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+	return buf;
+}
+
+
+
+void password_hash(std::string &password,std::string current_date) {
+	CkCrypt2 crypt;
+	bool success = crypt.UnlockComponent("Anything for 30-day trial");
+	if (success != true) {
+		std::cout << crypt.lastErrorText() << "\r\n";
+		return;
+	}
+	const char *pw = password.c_str();
+	const char *saltHex = current_date.c_str();
+	const char *hexKey = 0;
+	const char *pwCharset = "UTF-8";
+	const char *hashAlg = "sha256";
+	int iterationCount = 2048;
+	int outputBitLen = 192;
+	const char *enc = "hex";
+	hexKey = crypt.pbkdf2(pw, pwCharset, hashAlg, saltHex, iterationCount, outputBitLen, enc);
+	password = hexKey;
+}
 int user_exist(std::string user_name, std::string email) {
 	typedef odb::query<user> query;
 	std::auto_ptr<odb::core::database> db = create_database();
@@ -33,19 +65,25 @@ int user_exist(std::string user_name, std::string email) {
 int user_correct(std::string user_name, std::string password) {
 	typedef odb::query<user> query;
 	std::auto_ptr<odb::core::database> db = create_database();
-	std::shared_ptr<user> exists = db->query_one<user>(query::user_name == user_name && query::password == password);
-	if (exists.get() == 0) {
-		return 0;
+	std::shared_ptr<user> exists_name = db->query_one<user>(query::user_name == user_name);
+	if (exists_name.get() != 0) {
+		password_hash(password, exists_name->getRegistretionDate());
+		std::shared_ptr<user> exists_password = db->query_one<user>(query::user_name == user_name && query::password == password);
+		if (exists_password.get() != 0)
+			return 1;
 	}
-	return 1;
+	return 0;
 }
 int registration(std::string user_name, std::string password, std::string first_name, std::string last_name, std::string email)
 {
 	std::auto_ptr<odb::core::database> db = create_database();
 	odb::session s;
 	odb::core::transaction t(db->begin());
-	std::tr1::shared_ptr<user> user_new(new user(user_name, password, first_name, last_name, email));
+
 	if (!user_exist(user_name, email)){
+		std::string registration_date =  currentDateTime();
+		password_hash(password, registration_date);
+		std::tr1::shared_ptr<user> user_new(new user(user_name, password , first_name, last_name, email, registration_date));
 		db->persist(user_new);
 		t.commit();
 		std::cout << "\nUser registered" << std::endl;
@@ -131,8 +169,8 @@ int main()
 */
 
 
-	registration("tejt", "testPW", "Attila", "Lebbenszki", "usedemail");
-	logged_in = login("tejt", "testPW");
+	registration("ati703", "password", "Attila", "Lebbenszki", "ati703@gmail.com");
+	login("ati703", "password");
 	//t.commit();
     return 0;
 }
