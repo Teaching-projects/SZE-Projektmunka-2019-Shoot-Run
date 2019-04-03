@@ -8,7 +8,7 @@
   xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
 <wpt lat="49.214230"    lon="11.46150000000"><ele>3.4</ele><time>2016-02-16T14:01:03Z</time><extensions><gpxtpx:TrackPointExtension><gpxtpx:hr>171</gpxtpx:hr></gpxtpx:TrackPointExtension></extensions></wpt>
 <wpt lat="49.214218"    lon="11.46100000000"><ele>3.4</ele><time>2016-02-16T14:01:15Z</time><extensions><gpxtpx:TrackPointExtension><gpxtpx:hr>171</gpxtpx:hr></gpxtpx:TrackPointExtension></extensions></wpt>
-<wpt lat="49.214216"    lon="11.46080000000"><ele>3.4</ele><time>2016-02-16T14:01:18Z</time><extensions><gpxtpx:TrackPointExtension><gpxtpx:hr>171</gpxtpx:hr></gpxtpx:TrackPointExtension></extensions></wpt>
+<wpt lat="49.214216"    lon="11.46080000000"><ele>3.4</űele><time>2016-02-16T14:01:18Z</time><extensions><gpxtpx:TrackPointExtension><gpxtpx:hr>171</gpxtpx:hr></gpxtpx:TrackPointExtension></extensions></wpt>
 <wpt lat="37.778378000" lon="-122.391117000"><ele>3.4</ele><time>2016-02-16T14:01:23Z</time><extensions><gpxtpx:TrackPointExtension><gpxtpx:hr>171</gpxtpx:hr></gpxtpx:TrackPointExtension></extensions></wpt>
 <wpt lat="37.778449000" lon="-122.391039000"><ele>3.4</ele><time>2016-02-16T14:01:26Z</time><extensions><gpxtpx:TrackPointExtension><gpxtpx:hr>171</gpxtpx:hr></gpxtpx:TrackPointExtension></extensions></wpt>
 <wpt lat="37.778525000" lon="-122.390942000"><ele>3.4</ele><time>2016-02-16T14:01:29Z</time><extensions><gpxtpx:TrackPointExtension><gpxtpx:hr>171</gpxtpx:hr></gpxtpx:TrackPointExtension></extensions></wpt>
