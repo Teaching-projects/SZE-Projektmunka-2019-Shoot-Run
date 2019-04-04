@@ -1,0 +1,22 @@
+Windows SDK 10.0.17763.0 verzióval használok Visual studióban.
+
+https://www.codesynthesis.com/products/odb/download.xhtml
+https://i.imgur.com/NQZX3by.png
+ 
+odb-2.4.0-i686-windows	bin mappában van az odb fordító   PATH-be beírni hogy cmd ből használni lehessen
+libodb-2.4.0            Mappájában van telepítő utasítás
+libodb-mysql-2.4.0      Mappájában van telepítő utasítás	Szükség van a mysql letöltésére és a libodb-2.4.0 "telepítésére"
+
+https://downloads.mysql.com/archives/community/	5.5.43 verziót kell letölteni.
+ https://i.imgur.com/pYCIhxN.png
+
+ORM használata cmd-ben parancsok amiket használok
+
+  Hosszan odb --database mysql --generate-query --generate-schema --generate-session elérési útvonal
+  Röviden odb -d mysql -q -s -e
+  Ahogy használni szoktam odb -d mysql -s -q -e event.h image.h track.h tardis.h user.h
+
+    --database mysql      Adatbázis definiálására a mutató
+    --generate-query      Adatbázisból való lekérdezést támogató kód generálására, e nélkül vannak funkciók amiket nem tudnánk használni
+    --generate-schema     Adatbázis sémájának készítésére a mutató
+    --generate-session    Az osztályokban alapból engedélyezi a session supporttot
