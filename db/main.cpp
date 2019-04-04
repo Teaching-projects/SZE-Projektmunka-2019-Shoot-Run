@@ -15,7 +15,8 @@
 #include "track-odb.hxx"
 #include "database.h"
 #include <CkCrypt2.h>
-
+#include <QtCore/QCoreApplication>
+#include <QCryptographicHash>
 
 double ran(double const range_min, double const range_max)
 {
@@ -34,26 +35,20 @@ std::string currentDateTime() {//under construct
 	return buf;
 }
 
+void password_hash(std::string &password, std::string current_date) {
+	QString Q_date = QString::fromStdString(current_date);
+	QString Q_password = QString::fromStdString(password);
 
-
-void password_hash(std::string &password,std::string current_date) {
-	CkCrypt2 crypt;
-	bool success = crypt.UnlockComponent("Anything for 30-day trial");
-	if (success != true) {
-		std::cout << crypt.lastErrorText() << "\r\n";
-		return;
+	QCryptographicHash::Algorithm algo = QCryptographicHash::Sha512;
+	const int rounds = 1000;
+	QByteArray hash = (Q_date + Q_password).toUtf8();
+	for (int i = 0; i < rounds; ++i) {
+		hash = QCryptographicHash::hash(hash, algo);
 	}
-	const char *pw = password.c_str();
-	const char *saltHex = current_date.c_str();
-	const char *hexKey = 0;
-	const char *pwCharset = "UTF-8";
-	const char *hashAlg = "sha256";
-	int iterationCount = 2048;
-	int outputBitLen = 192;
-	const char *enc = "hex";
-	hexKey = crypt.pbkdf2(pw, pwCharset, hashAlg, saltHex, iterationCount, outputBitLen, enc);
-	password = hexKey;
+	QString hashedPass = QString(hash.toBase64());
+	password = hashedPass.toUtf8().constData();
 }
+
 int user_exist(std::string user_name, std::string email) {
 	typedef odb::query<user> query;
 	std::auto_ptr<odb::core::database> db = create_database();
@@ -106,8 +101,13 @@ int login(std::string user_name, std::string password) {
 
 
 
+
+
 int main()
 {
+	QCoreApplication a();
+
+
 	/*
 	user	---					user_name	 password		first_name		last_name	 email
 	event	---					name
@@ -115,7 +115,7 @@ int main()
 	track	-event-user-		event		 user
 	tardis	-track-				track		 longitude		latitude		time
 	*/
-	
+
 	std::auto_ptr<odb::core::database> db = create_database();
 	//std::auto_ptr<odb::core::database> db = create_database();
 	//odb::session s;
@@ -172,6 +172,9 @@ int main()
 	registration("ati703", "password", "Attila", "Lebbenszki", "ati703@gmail.com");
 	login("ati703", "password");
 	//t.commit();
+	int dummy;
+	std::cin >> dummy;
     return 0;
+	//return a.exec();
 }
 
