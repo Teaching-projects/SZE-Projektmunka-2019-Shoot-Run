@@ -15,8 +15,8 @@
 #include "track-odb.hxx"
 #include "database.h"
 #include <CkCrypt2.h>
-#include <QtCore/QCoreApplication>
 #include <QCryptographicHash>
+#include <odb/qt/lazy-ptr.hxx>
 
 double ran(double const range_min, double const range_max)
 {
@@ -35,8 +35,8 @@ std::string currentDateTime() {//under construct
 	return buf;
 }
 
-void password_hash(std::string &password, std::string current_date) {
-	QString Q_date = QString::fromStdString(current_date);
+void password_hash(std::string &password, QDateTime current_date) {
+	QString Q_date = current_date.toString();
 	QString Q_password = QString::fromStdString(password);
 
 	QCryptographicHash::Algorithm algo = QCryptographicHash::Sha512;
@@ -51,34 +51,36 @@ void password_hash(std::string &password, std::string current_date) {
 
 int user_exist(std::string user_name, std::string email) {
 	typedef odb::query<user> query;
-	std::auto_ptr<odb::core::database> db = create_database();
-	std::shared_ptr<user> exists = db->query_one<user>(query::user_name == user_name || query::email == email);
+	QSharedPointer<odb::core::database> db = create_database();
+	QSharedPointer<user> exists = db->query_one<user>(query::user_name == user_name || query::email == email);
 	if (exists.get() == 0)
 		return 0;
 	return 1;
 }
+
 int user_correct(std::string user_name, std::string password) {
 	typedef odb::query<user> query;
-	std::auto_ptr<odb::core::database> db = create_database();
-	std::shared_ptr<user> exists_name = db->query_one<user>(query::user_name == user_name);
+	QSharedPointer<odb::core::database> db = create_database();
+	QSharedPointer<user> exists_name = db->query_one<user>(query::user_name == user_name);
 	if (exists_name.get() != 0) {
 		password_hash(password, exists_name->getRegistretionDate());
-		std::shared_ptr<user> exists_password = db->query_one<user>(query::user_name == user_name && query::password == password);
+		QSharedPointer<user> exists_password = db->query_one<user>(query::user_name == user_name && query::password == password);
 		if (exists_password.get() != 0)
 			return 1;
 	}
 	return 0;
 }
+
 int registration(std::string user_name, std::string password, std::string first_name, std::string last_name, std::string email)
 {
-	std::auto_ptr<odb::core::database> db = create_database();
+	QSharedPointer<odb::core::database> db = create_database();
 	odb::session s;
 	odb::core::transaction t(db->begin());
 
 	if (!user_exist(user_name, email)){
-		std::string registration_date =  currentDateTime();
+		QDateTime registration_date = QDateTime::currentDateTime();
 		password_hash(password, registration_date);
-		std::tr1::shared_ptr<user> user_new(new user(user_name, password , first_name, last_name, email, registration_date));
+		QSharedPointer<user> user_new(new user(user_name, password , first_name, last_name, email, registration_date));
 		db->persist(user_new);
 		t.commit();
 		std::cout << "\nUser registered" << std::endl;
@@ -87,8 +89,9 @@ int registration(std::string user_name, std::string password, std::string first_
 	std::cout << "\nUser name or email address already taken!" << std::endl;
 	return 0;
 };
+
 int login(std::string user_name, std::string password) {
-	std::auto_ptr<odb::core::database> db = create_database();
+	QSharedPointer<odb::core::database> db = create_database();
 	odb::session s;
 	odb::core::transaction t(db->begin());
 	if (user_correct(user_name, password)) {
@@ -105,9 +108,6 @@ int login(std::string user_name, std::string password) {
 
 int main()
 {
-	QCoreApplication a();
-
-
 	/*
 	user	---					user_name	 password		first_name		last_name	 email
 	event	---					name
@@ -116,38 +116,41 @@ int main()
 	tardis	-track-				track		 longitude		latitude		time
 	*/
 
-	std::auto_ptr<odb::core::database> db = create_database();
+	QSharedPointer<odb::core::database> db = create_database();
 	//std::auto_ptr<odb::core::database> db = create_database();
 	//odb::session s;
-	//odb::core::transaction t(db->begin());
+	odb::core::transaction t(db->begin());
 
-	/*std::tr1::shared_ptr<user> user1(new user("ati703",       "testPW", "Attila", "Lebbenszki", "lebbenszkiattilagmailcom"));
-	std::tr1::shared_ptr<user> user2(new user("patrikkocsis", "testPW", "Patrik", "Patrik",     "patrikkocsisgmailcom"));
-	std::tr1::shared_ptr<event> event1(new event("first"));
-	std::tr1::shared_ptr<event> event2(new event("second"));
-	std::tr1::shared_ptr<event> event3(new event("third"));
-	std::tr1::shared_ptr<image> image1(new image("/randompath", event1, user1, "1996-09-07 11:11:11", ran(0.0, 100.0), ran(0.0, 100.0)));
-	std::tr1::shared_ptr<image> image2(new image("/randompath", event1, user1, "1996-09-07 11:11:11", ran(0.0, 100.0), ran(0.0, 100.0)));
-	std::tr1::shared_ptr<image> image3(new image("/randompath", event1, user1, "1996-09-07 11:11:11", ran(0.0, 100.0), ran(0.0, 100.0)));
-	std::tr1::shared_ptr<image> image4(new image("/randompath", event2, user2, "1996-09-07 11:11:11", ran(0.0, 100.0), ran(0.0, 100.0)));
-	std::tr1::shared_ptr<image> image5(new image("/randompath", event2, user2, "1996-09-07 11:11:11", ran(0.0, 100.0), ran(0.0, 100.0)));
-	std::tr1::shared_ptr<image> image6(new image("/randompath", event3, user2, "1996-09-07 11:11:11", ran(0.0, 100.0), ran(0.0, 100.0)));
-	std::tr1::shared_ptr<track> track1(new track(event1, user1));
-	std::tr1::shared_ptr<track> track2(new track(event2, user2));
-	std::tr1::shared_ptr<track> track3(new track(event3, user2));
-	std::tr1::shared_ptr<tardis> t1(new tardis(track1, ran(0.0, 100.0), ran(0.0, 100.0), "1996-09-07 11:11:11"));
-	std::tr1::shared_ptr<tardis> t2(new tardis(track1, ran(0.0, 100.0), ran(0.0, 100.0), "1996-09-07 11:11:11"));
-	std::tr1::shared_ptr<tardis> t3(new tardis(track1, ran(0.0, 100.0), ran(0.0, 100.0), "1996-09-07 11:11:11"));
-	std::tr1::shared_ptr<tardis> t4(new tardis(track2, ran(0.0, 100.0), ran(0.0, 100.0), "1996-09-07 11:11:11"));
-	std::tr1::shared_ptr<tardis> t5(new tardis(track2, ran(0.0, 100.0), ran(0.0, 100.0), "1996-09-07 11:11:11"));
-	std::tr1::shared_ptr<tardis> t6(new tardis(track3, ran(0.0, 100.0), ran(0.0, 100.0), "1996-09-07 11:11:11"));
-	std::tr1::shared_ptr<tardis> t7(new tardis(track3, ran(0.0, 100.0), ran(0.0, 100.0), "1996-09-07 11:11:11"));
-	std::tr1::shared_ptr<tardis> t8(new tardis(track3, ran(0.0, 100.0), ran(0.0, 100.0), "1996-09-07 11:11:11"));
+	QDateTime now = QDateTime::currentDateTime();
+	QSharedPointer<user> user1(new user("ati703",       "testPW", "Attila", "Lebbenszki", "lebbenszkiattilagmailcom", now));
+	QSharedPointer<user> user2(new user("patrikkocsis", "testPW", "Patrik", "Patrik",     "patrikkocsisgmailcom", now));
+	QSharedPointer<event> event1(new event("first"));
+	QSharedPointer<event> event2(new event("second"));
+	QSharedPointer<event> event3(new event("third"));
+	QSharedPointer<image> image1(new image("/randompath", event1, user1, now, ran(0.0, 100.0), ran(0.0, 100.0)));
+	QSharedPointer<image> image2(new image("/randompath", event1, user1, now, ran(0.0, 100.0), ran(0.0, 100.0)));
+	QSharedPointer<image> image3(new image("/randompath", event1, user1, now, ran(0.0, 100.0), ran(0.0, 100.0)));
+	QSharedPointer<image> image4(new image("/randompath", event2, user2, now, ran(0.0, 100.0), ran(0.0, 100.0)));
+	QSharedPointer<image> image5(new image("/randompath", event2, user2, now, ran(0.0, 100.0), ran(0.0, 100.0)));
+	QSharedPointer<image> image6(new image("/randompath", event3, user2, now, ran(0.0, 100.0), ran(0.0, 100.0)));
+	QSharedPointer<track> track1(new track(event1, user1));
+	QSharedPointer<track> track2(new track(event2, user2));
+	QSharedPointer<track> track3(new track(event3, user2));	
+
+	QSharedPointer<tardis> t1(new tardis(track1, ran(0.0, 100.0), ran(0.0, 100.0), now));
+	QSharedPointer<tardis> t2(new tardis(track1, ran(0.0, 100.0), ran(0.0, 100.0), now));
+	QSharedPointer<tardis> t3(new tardis(track1, ran(0.0, 100.0), ran(0.0, 100.0), now));
+	QSharedPointer<tardis> t4(new tardis(track2, ran(0.0, 100.0), ran(0.0, 100.0), now));
+	QSharedPointer<tardis> t5(new tardis(track2, ran(0.0, 100.0), ran(0.0, 100.0), now));
+	QSharedPointer<tardis> t6(new tardis(track3, ran(0.0, 100.0), ran(0.0, 100.0), now));
+	QSharedPointer<tardis> t7(new tardis(track3, ran(0.0, 100.0), ran(0.0, 100.0), now));
+	QSharedPointer<tardis> t8(new tardis(track3, ran(0.0, 100.0), ran(0.0, 100.0), now));
+
 	image1->event(event1);	image2->event(event1);	image3->event(event1);	image4->event(event2);	image5->event(event2);	 image6->event(event3);
 	event1->images().push_back(image1);		event1->images().push_back(image2);	event1->images().push_back(image3);
 	event2->images().push_back(image4);		event2->images().push_back(image5);
 	event3->images().push_back(image6);
-
+	
 	image1->user(user1);	image2->user(user1);	image3->user(user1);	image4->user(user2);	image5->user(user2);	 image6->user(user2);
 	user1->images().push_back(image1);	user1->images().push_back(image2);	user1->images().push_back(image3);
 	user2->images().push_back(image4);	user2->images().push_back(image5);	user2->images().push_back(image6);
@@ -166,15 +169,13 @@ int main()
 	db->persist(image1);	db->persist(image2);	db->persist(image3);	db->persist(image4);	db->persist(image5);	db->persist(image6);
 	db->persist(track1);	db->persist(track2);	db->persist(track3);
 	db->persist(t1);		db->persist(t2);		db->persist(t3);		db->persist(t4);		db->persist(t5);		db->persist(t6);		db->persist(t7);		db->persist(t8);
-*/
-
-
-	registration("ati703", "password", "Attila", "Lebbenszki", "ati703@gmail.com");
-	login("ati703", "password");
+	
+	t.commit();
+	//registration("ati7031", "password", "Attila", "Lebbenszki", "ati703@gmail.com1");
+	//login("ati703", "password");
 	//t.commit();
-	int dummy;
-	std::cin >> dummy;
+	//int dummy;
+	//std::cin >> dummy;
     return 0;
-	//return a.exec();
 }
 

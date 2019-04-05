@@ -5,9 +5,9 @@
 #include <odb/database.hxx>
 #include <odb/mysql/database.hxx>
 
-std::auto_ptr<odb::core::database> create_database()
+QSharedPointer<odb::core::database> create_database()
 {
-	std::auto_ptr<odb::core::database> db(new odb::mysql::database("root", "", "runner"));
+	QSharedPointer<odb::core::database> db(new odb::mysql::database("root", "", "runner"));
 	return db;
 }
 

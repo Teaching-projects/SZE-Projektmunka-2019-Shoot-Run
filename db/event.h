@@ -4,26 +4,19 @@
 #include <odb/core.hxx>
 #include <odb/tr1/memory.hxx>
 #include <odb/tr1/lazy-ptr.hxx>
+#include <odb/qt/lazy-ptr.hxx>
 #include <memory>
 #include <string>
 #include <vector>
 #include <stdio.h>
 #include <time.h>
-
-//under construct
-/*std::string currentDateTime() {
-	time_t     now = time(0);
-	struct tm  tstruct;
-	char       buf[80];
-	tstruct = *localtime(&now);
-	strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-	return buf;
-}*/
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDateTime>
 
 class track; class user; class image;
-typedef std::vector<odb::tr1::lazy_weak_ptr<track> > tracks;
+typedef std::vector<QLazyWeakPointer <track> > tracks;
 typedef ::tracks tracks_type;
-typedef std::vector<odb::tr1::lazy_weak_ptr<image> > images;
+typedef std::vector<QLazyWeakPointer<image> > images;
 typedef ::images images_type;
 
 #pragma db object
@@ -38,13 +31,15 @@ public:
 	images_type& images() { return images_; }
 
 	event() {}
-	event(std::string event_name) : event_name(event_name) { submit_date = "123123"; }//currentDateTime();}
+	event(std::string event_name):event_name(event_name){
+		submit_date = QDateTime::currentDateTime();}
 private:
 	friend class odb::access;
 #pragma db id auto
 	unsigned int event_id;
 	std::string  event_name;
-	std::string  submit_date;
+#pragma db type("DATETIME(6)")
+	QDateTime  submit_date;
 	unsigned int submitter_id;//placeholder
 	bool         event_accepted;
 #pragma db value_not_null inverse(event_track_)

@@ -3,13 +3,15 @@
 #include <odb/core.hxx>
 #include <odb/tr1/memory.hxx>
 #include <odb/tr1/lazy-ptr.hxx>
+#include <odb/qt/lazy-ptr.hxx>
 #include <string>
 #include <vector>
+#include <QtCore/QDateTime>
 
 class image;class track;
-typedef std::vector<odb::tr1::lazy_weak_ptr<image> > images;
+typedef std::vector<QLazyWeakPointer<image> > images;
 typedef ::images images_type;
-typedef std::vector<odb::tr1::lazy_weak_ptr<track> > tracks;
+typedef std::vector<QLazyWeakPointer<track> > tracks;
 typedef ::tracks tracks_type;
 
 #pragma db object
@@ -24,15 +26,16 @@ public:
 	tracks_type& tracks() { return tracks_; }
 
 	user() {}
-	user(std::string, std::string, std::string, std::string, std::string, std::string);
-	std::string getRegistretionDate();
-	std::string getPassword();
+	user(std::string, std::string, std::string, std::string, std::string, QDateTime);
+	QDateTime getRegistretionDate();
+	//std::string getPassword();
 private:
     friend class odb::access;
 #pragma db id auto
     unsigned int user_id;
 	std::string  user_name, password, first_name, last_name, email;
-	std::string registration_date;
+#pragma db type("DATETIME(6)")
+	QDateTime registration_date;
 #pragma db value_not_null inverse(user_image_) //image
 	images_type images_;
 #pragma db value_not_null inverse(user_track_) //track
