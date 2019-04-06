@@ -1,0 +1,2 @@
+odb-run lefordítja a header fileokat
+move a lefordított dolgokat áthelyezi ka megfelelõ mappáikba
