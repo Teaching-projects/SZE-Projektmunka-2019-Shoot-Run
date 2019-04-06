@@ -117,8 +117,6 @@ int main()
 	*/
 
 	QSharedPointer<odb::core::database> db = create_database();
-	//std::auto_ptr<odb::core::database> db = create_database();
-	//odb::session s;
 	odb::core::transaction t(db->begin());
 
 	QDateTime now = QDateTime::currentDateTime();
@@ -150,7 +148,8 @@ int main()
 	event1->images().push_back(image1);		event1->images().push_back(image2);	event1->images().push_back(image3);
 	event2->images().push_back(image4);		event2->images().push_back(image5);
 	event3->images().push_back(image6);
-	
+	event1->user(user1); 	event2->user(user1); 	event3->user(user2);
+
 	image1->user(user1);	image2->user(user1);	image3->user(user1);	image4->user(user2);	image5->user(user2);	 image6->user(user2);
 	user1->images().push_back(image1);	user1->images().push_back(image2);	user1->images().push_back(image3);
 	user2->images().push_back(image4);	user2->images().push_back(image5);	user2->images().push_back(image6);
@@ -163,7 +162,6 @@ int main()
 	track3->tardises().push_back(t6);	track3->tardises().push_back(t7);	track3->tardises().push_back(t8);
 
 
-
 	db->persist(user1);		db->persist(user2);
 	db->persist(event1);	db->persist(event2); 	db->persist(event3);
 	db->persist(image1);	db->persist(image2);	db->persist(image3);	db->persist(image4);	db->persist(image5);	db->persist(image6);
@@ -171,9 +169,9 @@ int main()
 	db->persist(t1);		db->persist(t2);		db->persist(t3);		db->persist(t4);		db->persist(t5);		db->persist(t6);		db->persist(t7);		db->persist(t8);
 	
 	t.commit();
-	//registration("ati7031", "password", "Attila", "Lebbenszki", "ati703@gmail.com1");
-	//login("ati703", "password");
-	//t.commit();
+	registration("ati7031", "password", "Attila", "Lebbenszki", "ati703@gmail.com1");
+	login("ati703", "password");
+
 	//int dummy;
 	//std::cin >> dummy;
     return 0;

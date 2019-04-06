@@ -12,26 +12,26 @@
 class track;
 typedef ::track track_type;
 
-#pragma db object //pointer(QSharedPointer)
+#pragma db object
 class tardis
 {
+public:
+
+	const QSharedPointer<track_type>& track() const { return track_id; }
+	void track(QSharedPointer<track_type> track) { track_id = track; }
+
+	tardis() {}
+	tardis(QSharedPointer<track_type>, double, double, QDateTime);
 private:
  friend class odb::access;
 #pragma db id auto
     unsigned int tardis_id;
 #pragma db not_null //track
-	QSharedPointer<track_type> track_tardis_;
+	QSharedPointer<track_type> track_id;
 	double       tardis_longitude;
 	double       tardis_latitude;
-#pragma db type("DATETIME(6)")
+#pragma db type("DATETIME")
 	QDateTime	 tardis_date;
-public:
-	//track
-	const QSharedPointer<track_type>& track() const { return track_tardis_; }
-	void track(QSharedPointer<track_type> track) { track_tardis_ = track; }
-
-    tardis(){}
-    tardis(QSharedPointer<track_type>,double,double, QDateTime);
 };
 
 #ifdef ODB_COMPILER

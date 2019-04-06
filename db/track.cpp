@@ -1,4 +1,4 @@
 #include "track.h"
 
-track::track(QLazySharedPointer<event_type> event_track_, QLazySharedPointer<user_type> user_track_) :
-	event_track_(event_track_),user_track_(user_track_){}
+track::track(QLazySharedPointer<event_type> event_id, QLazySharedPointer<user_type> user_id) :
+	event_id(event_id),user_id(user_id){}

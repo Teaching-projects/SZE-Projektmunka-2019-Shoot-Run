@@ -16,29 +16,29 @@ typedef ::event event_type;
 #pragma db object
 class track
 {
-private:
-friend class odb::access;
-
-#pragma db id auto
-	unsigned int track_id;
-#pragma db value_not_null inverse(track_tardis_) //tardis
-	tardises_type tardises_;
-#pragma db not_null //event
-	QLazySharedPointer<event_type> event_track_;
-#pragma db not_null //user
-	QLazySharedPointer<user_type> user_track_;
 public:
-	//event
-	const QLazySharedPointer<event_type>& event() const { return event_track_; }
-	void event(QLazySharedPointer<event_type> event) { event_track_ = event; }
-	//user
-	const QLazySharedPointer<user_type>& user() const { return user_track_; }
-	void user(QLazySharedPointer<user_type> user) { user_track_ = user; }
-	//tardis vector
+
+	const QLazySharedPointer<event_type>& event() const { return event_id; }
+	void event(QLazySharedPointer<event_type> event) { event_id = event; }
+
+	const QLazySharedPointer<user_type>& user() const { return user_id; }
+	void user(QLazySharedPointer<user_type> user) { user_id = user; }
+
 	const tardises_type& tardises() const { return tardises_; }
 	tardises_type& tardises() { return tardises_; }
+
 	track() {}
 	track(QLazySharedPointer<event_type>, QLazySharedPointer<user_type>);
+private:
+friend class odb::access;
+#pragma db id auto
+	unsigned int track_id;
+#pragma db value_not_null inverse(track_id)
+	tardises_type tardises_;
+#pragma db not_null
+	QLazySharedPointer<event_type> event_id;
+#pragma db not_null
+	QLazySharedPointer<user_type> user_id;
 };
 
 #ifdef ODB_COMPILER
