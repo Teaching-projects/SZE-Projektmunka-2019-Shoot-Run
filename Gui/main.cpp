@@ -1,11 +1,11 @@
-#include "event.h"
-#include <QtWidgets>
+#include "gui.h"
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Event e;
-    e.show();
+    gui gui;
+    gui.show();
 
     return a.exec();
 }
