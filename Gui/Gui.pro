@@ -28,16 +28,25 @@ SOURCES += \
         main.cpp \
     gui.cpp \
     reg.cpp \
-    login.cpp
+    login.cpp \
+    event.cpp \
+    addevent.cpp \
+    uploadpic.cpp
 
 HEADERS += \
     gui.h \
     reg.h \
-    login.h
+    login.h \
+    event.h \
+    addevent.h \
+    uploadpic.h
 
 FORMS += \
     reg.ui \
-    login.ui
+    login.ui \
+    event.ui \
+    addevent.ui \
+    uploadpic.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
