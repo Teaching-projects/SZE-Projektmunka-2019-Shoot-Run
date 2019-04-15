@@ -24,7 +24,7 @@ Könyvtárak:
 2. SNR/Project mappán belül létrehozunk egy Libraries mappát, ide kicsomagoljuk a 4 odb rar fájlt és a MySQL rart. És a kicsomagolt mappák nevét átnevezzük ezekre:
   - db
   - libodb
-  - lidodb-mysql
+  - libodb-mysql
   - libodb-qt
   - mysql
 3. A libodb mappában megnyitjuk a vc12 solution fájlt és beállítjuk 64bitre és lefuttatjuk Release és Debug módban.
