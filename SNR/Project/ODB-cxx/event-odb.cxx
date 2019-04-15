@@ -402,13 +402,17 @@ namespace odb
     //
     t[2UL] = 0;
 
-    // event_accepted
+    // event_date
     //
     t[3UL] = 0;
 
-    // submitter_id
+    // event_accepted
     //
     t[4UL] = 0;
+
+    // submitter_id
+    //
+    t[5UL] = 0;
 
     return grew;
   }
@@ -450,6 +454,13 @@ namespace odb
     b[n].buffer_type = MYSQL_TYPE_DATETIME;
     b[n].buffer = &i.submit_date_value;
     b[n].is_null = &i.submit_date_null;
+    n++;
+
+    // event_date
+    //
+    b[n].buffer_type = MYSQL_TYPE_DATETIME;
+    b[n].buffer = &i.event_date_value;
+    b[n].is_null = &i.event_date_null;
     n++;
 
     // event_accepted
@@ -540,6 +551,20 @@ namespace odb
           mysql::id_datetime >::set_image (
         i.submit_date_value, is_null, v);
       i.submit_date_null = is_null;
+    }
+
+    // event_date
+    //
+    {
+      ::QDateTime const& v =
+        o.event_date;
+
+      bool is_null (true);
+      mysql::value_traits<
+          ::QDateTime,
+          mysql::id_datetime >::set_image (
+        i.event_date_value, is_null, v);
+      i.event_date_null = is_null;
     }
 
     // event_accepted
@@ -636,6 +661,20 @@ namespace odb
         i.submit_date_null);
     }
 
+    // event_date
+    //
+    {
+      ::QDateTime& v =
+        o.event_date;
+
+      mysql::value_traits<
+          ::QDateTime,
+          mysql::id_datetime >::set_value (
+        v,
+        i.event_date_value,
+        i.event_date_null);
+    }
+
     // event_accepted
     //
     {
@@ -695,16 +734,18 @@ namespace odb
   "(`event_id`, "
   "`event_name`, "
   "`submit_date`, "
+  "`event_date`, "
   "`event_accepted`, "
   "`submitter_id`) "
   "VALUES "
-  "(?, ?, ?, ?, ?)";
+  "(?, ?, ?, ?, ?, ?)";
 
   const char access::object_traits_impl< ::event, id_mysql >::find_statement[] =
   "SELECT "
   "`event`.`event_id`, "
   "`event`.`event_name`, "
   "`event`.`submit_date`, "
+  "`event`.`event_date`, "
   "`event`.`event_accepted`, "
   "`event`.`submitter_id` "
   "FROM `event` "
@@ -715,6 +756,7 @@ namespace odb
   "SET "
   "`event_name`=?, "
   "`submit_date`=?, "
+  "`event_date`=?, "
   "`event_accepted`=?, "
   "`submitter_id`=? "
   "WHERE `event_id`=?";
@@ -728,6 +770,7 @@ namespace odb
   "`event`.`event_id`,\n"
   "`event`.`event_name`,\n"
   "`event`.`submit_date`,\n"
+  "`event`.`event_date`,\n"
   "`event`.`event_accepted`,\n"
   "`event`.`submitter_id`\n"
   "FROM `event`\n"

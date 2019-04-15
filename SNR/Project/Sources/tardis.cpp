@@ -1,9 +1,9 @@
 #include "tardis.h"
 
-tardis::tardis(QSharedPointer<track_type> track_, double tardis_longitude,
+tardis::tardis(QSharedPointer<track_type> track_id, double tardis_longitude,
 	double tardis_latitude, QDateTime tardis_date)
-	:tardis_longitude(tardis_longitude),
-	tardis_latitude(tardis_latitude), tardis_date(tardis_date){
+	:tardis_longitude(tardis_longitude),tardis_latitude(tardis_latitude), tardis_date(tardis_date)
+{
 	this->track_id = track_id;
 }
 

@@ -2,6 +2,9 @@
 #define LOGIN_H
 
 #include <QDialog>
+#include <guievent.h>
+#include <addevent.h>
+#include <finddialog.h>
 
 class QPushButton;
 class QLineEdit;
@@ -15,7 +18,6 @@ public:
     explicit login(QWidget *parent = nullptr);
 
 private slots:
-    void logClicked();
     void selectClicked();
 
 private:
@@ -27,7 +29,17 @@ private:
     QPushButton *logoutButton;
     QListWidget *listWidget;
 
+    GuiEvent *eventdialog;
+    AddEvent *addeventdialog;
+    FindDialog *finddialog;
 
+public slots:
+    void eventSelect();
+    void addEvent();
+    void findEvent();
+    void deleteEvent();
+    void editEvent();
+    void logout();
 
 };
 

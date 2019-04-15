@@ -70,6 +70,7 @@
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;odb-d.lib;odb-mysql-d.lib;odb-qt-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
@@ -102,6 +103,7 @@
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;odb.lib;odb-mysql.lib;odb-qt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
@@ -136,9 +138,15 @@
     <None Include="ODB-sql\user.sql" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="UI\addevent.ui" />
+    <QtUic Include="UI\event.ui" />
+    <QtUic Include="UI\filtereddialog.ui" />
+    <QtUic Include="UI\finddialog.ui" />
     <QtUic Include="UI\gui.ui" />
+    <QtUic Include="UI\guievent.ui" />
     <QtUic Include="UI\login.ui" />
     <QtUic Include="UI\reg.ui" />
+    <QtUic Include="UI\uploadpic.ui" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ODB-cxx\event-odb.cxx" />
@@ -146,24 +154,49 @@
     <ClCompile Include="ODB-cxx\tardis-odb.cxx" />
     <ClCompile Include="ODB-cxx\track-odb.cxx" />
     <ClCompile Include="ODB-cxx\user-odb.cxx" />
+    <ClCompile Include="Sources\addevent.cpp" />
     <ClCompile Include="Sources\event.cpp" />
     <ClCompile Include="Sources\exif.cpp" />
+    <ClCompile Include="Sources\filtereddialog.cpp" />
+    <ClCompile Include="Sources\finddialog.cpp" />
     <ClCompile Include="Sources\gui.cpp" />
+    <ClCompile Include="Sources\guievent.cpp" />
     <ClCompile Include="Sources\image.cpp" />
     <ClCompile Include="Sources\login.cpp" />
     <ClCompile Include="Sources\main.cpp" />
     <ClCompile Include="Sources\reg.cpp" />
     <ClCompile Include="Sources\tardis.cpp" />
     <ClCompile Include="Sources\track.cpp" />
+    <ClCompile Include="Sources\uploadpic.cpp" />
     <ClCompile Include="Sources\user.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="Headers\addevent.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <ClInclude Include="Headers\database.h" />
     <ClInclude Include="Headers\event.h" />
     <ClInclude Include="Headers\exif.h" />
+    <QtMoc Include="Headers\filtereddialog.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
+    <QtMoc Include="Headers\finddialog.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
+    <QtMoc Include="Headers\guievent.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <ClInclude Include="Headers\image.h" />
     <ClInclude Include="Headers\tardis.h" />
     <ClInclude Include="Headers\track.h" />
+    <QtMoc Include="Headers\uploadpic.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <ClInclude Include="Headers\user.h" />
     <QtMoc Include="Headers\reg.h" />
     <QtMoc Include="Headers\login.h" />

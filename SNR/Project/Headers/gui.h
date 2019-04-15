@@ -16,24 +16,19 @@ class gui : public QWidget
     Q_OBJECT
 public:
     explicit gui(QWidget *parent = nullptr);
-
 private:
     QPushButton *logButton;
     QPushButton *regButton;
     QPushButton *cancelButton;
     QLineEdit *unameLine;
     QLineEdit *passLine;
-
     Reg *regdialog;
     login *logdialog;
-
-
 signals:
 
 public slots:
-    void regUser();
-    void logUser();
-
+	void regUser();
+	void logUser();
 };
 
 #endif // GUI_H

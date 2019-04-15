@@ -157,6 +157,18 @@ namespace odb
 
     static const submit_date_type_ submit_date;
 
+    // event_date
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::QDateTime,
+        mysql::id_datetime >::query_type,
+      mysql::id_datetime >
+    event_date_type_;
+
+    static const event_date_type_ event_date;
+
     // event_accepted
     //
     typedef
@@ -198,6 +210,11 @@ namespace odb
   submit_date (A::table_name, "`submit_date`", 0);
 
   template <typename A>
+  const typename pointer_query_columns< ::event, id_mysql, A >::event_date_type_
+  pointer_query_columns< ::event, id_mysql, A >::
+  event_date (A::table_name, "`event_date`", 0);
+
+  template <typename A>
   const typename pointer_query_columns< ::event, id_mysql, A >::event_accepted_type_
   pointer_query_columns< ::event, id_mysql, A >::
   event_accepted (A::table_name, "`event_accepted`", 0);
@@ -237,6 +254,11 @@ namespace odb
       //
       MYSQL_TIME submit_date_value;
       my_bool submit_date_null;
+
+      // event_date
+      //
+      MYSQL_TIME event_date_value;
+      my_bool event_date_null;
 
       // event_accepted
       //
@@ -416,7 +438,7 @@ namespace odb
 
     typedef mysql::query_base query_base_type;
 
-    static const std::size_t column_count = 5UL;
+    static const std::size_t column_count = 6UL;
     static const std::size_t id_column_count = 1UL;
     static const std::size_t inverse_column_count = 0UL;
     static const std::size_t readonly_column_count = 0UL;
@@ -544,6 +566,18 @@ namespace odb
 
     static const submit_date_type_ submit_date;
 
+    // event_date
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::QDateTime,
+        mysql::id_datetime >::query_type,
+      mysql::id_datetime >
+    event_date_type_;
+
+    static const event_date_type_ event_date;
+
     // event_accepted
     //
     typedef
@@ -599,6 +633,11 @@ namespace odb
   const typename query_columns< ::event, id_mysql, A >::submit_date_type_
   query_columns< ::event, id_mysql, A >::
   submit_date (A::table_name, "`submit_date`", 0);
+
+  template <typename A>
+  const typename query_columns< ::event, id_mysql, A >::event_date_type_
+  query_columns< ::event, id_mysql, A >::
+  event_date (A::table_name, "`event_date`", 0);
 
   template <typename A>
   const typename query_columns< ::event, id_mysql, A >::event_accepted_type_

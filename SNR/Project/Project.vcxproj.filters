@@ -103,6 +103,24 @@
     <QtUic Include="UI\reg.ui">
       <Filter>UI</Filter>
     </QtUic>
+    <QtUic Include="UI\addevent.ui">
+      <Filter>UI</Filter>
+    </QtUic>
+    <QtUic Include="UI\event.ui">
+      <Filter>UI</Filter>
+    </QtUic>
+    <QtUic Include="UI\filtereddialog.ui">
+      <Filter>UI</Filter>
+    </QtUic>
+    <QtUic Include="UI\finddialog.ui">
+      <Filter>UI</Filter>
+    </QtUic>
+    <QtUic Include="UI\guievent.ui">
+      <Filter>UI</Filter>
+    </QtUic>
+    <QtUic Include="UI\uploadpic.ui">
+      <Filter>UI</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ODB-cxx\event-odb.cxx">
@@ -148,6 +166,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sources\exif.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\addevent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\filtereddialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\finddialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\guievent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\uploadpic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -197,6 +230,21 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Headers\reg.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Headers\addevent.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Headers\filtereddialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Headers\finddialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Headers\guievent.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Headers\uploadpic.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

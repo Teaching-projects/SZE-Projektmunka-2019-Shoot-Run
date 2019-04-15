@@ -8,11 +8,11 @@
 #include <QtCore/QDateTime>
 
 class track; class user; class image;
-typedef ::user user_type;
+typedef user user_type;
 typedef std::vector<QLazyWeakPointer <track> > tracks;
-typedef ::tracks tracks_type;
+typedef tracks tracks_type;
 typedef std::vector<QLazyWeakPointer<image> > images;
-typedef ::images images_type;
+typedef images images_type;
 
 #pragma db object
 class event
@@ -26,8 +26,10 @@ public:
 	void user(QLazySharedPointer<user_type> user) { submitter_id = user; }
 
 	event() {}
-	event(std::string event_name):event_name(event_name){submit_date = QDateTime::currentDateTime();}
+	event(std::string event_name, QDateTime event_date):event_name(event_name),event_date(event_date){submit_date = QDateTime::currentDateTime();}
 	void Accept();
+	QString getname() { return QString::fromStdString(event_name);  }
+	QDateTime getdate() { return event_date; }
 private:
 	friend class odb::access;
 #pragma db id auto
@@ -35,6 +37,7 @@ private:
 	std::string  event_name;
 #pragma db type("DATETIME")
 	QDateTime    submit_date;
+	QDateTime	 event_date;
 	bool		 event_accepted=0;
 #pragma db value_not_null inverse(track_id)
 	tracks_type  tracks_;

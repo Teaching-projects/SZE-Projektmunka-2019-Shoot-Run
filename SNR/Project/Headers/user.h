@@ -1,6 +1,7 @@
 #ifndef USER_H
 #define USER_H
 
+#include <iostream>
 #include <odb/core.hxx>
 #include <odb/qt/lazy-ptr.hxx>
 #include <string>
@@ -9,10 +10,10 @@
 
 class image;class track;
 typedef std::vector<QLazyWeakPointer<image> > images;
-typedef ::images images_type;
+typedef images images_type;
 typedef std::vector<QLazyWeakPointer<track> > tracks;
-typedef ::tracks tracks_type;
-enum type { admin, moderator, simple_user, guest};
+typedef tracks tracks_type;
+enum type { admin, simple_user, guest};
 
 #pragma db object
 class user

@@ -11,7 +11,7 @@ CREATE TABLE `user` (
   `first_name` TEXT NOT NULL,
   `last_name` TEXT NOT NULL,
   `email` TEXT NOT NULL,
-  `type` ENUM('admin', 'moderator', 'simple_user', 'guest') NOT NULL,
+  `type` ENUM('admin', 'simple_user', 'guest') NOT NULL,
   `registration_date` DATETIME NULL)
  ENGINE=InnoDB;
 

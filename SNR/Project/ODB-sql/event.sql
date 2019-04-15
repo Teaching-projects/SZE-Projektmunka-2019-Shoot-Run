@@ -8,6 +8,7 @@ CREATE TABLE `event` (
   `event_id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `event_name` TEXT NOT NULL,
   `submit_date` DATETIME NULL,
+  `event_date` DATETIME NULL,
   `event_accepted` TINYINT(1) NOT NULL,
   `submitter_id` INT UNSIGNED NOT NULL)
  ENGINE=InnoDB;
