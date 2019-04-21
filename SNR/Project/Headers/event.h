@@ -43,7 +43,7 @@ private:
 	tracks_type  tracks_;
 #pragma db value_not_null inverse(image_id)
 	images_type  images_;
-#pragma db not_null
+#pragma db null//not_null TODO
 	QLazySharedPointer<user_type> submitter_id;
 };
 

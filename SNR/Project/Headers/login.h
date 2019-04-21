@@ -6,20 +6,25 @@
 #include <addevent.h>
 #include <finddialog.h>
 
+
+#include "database.h"
+#include <odb/qt/lazy-ptr.hxx>
+#include "event-odb.hxx"
+
+class event;
 class QPushButton;
 class QLineEdit;
 class QListWidget;
 
-class login : public QDialog
+class login : public QDialog, public DB
 {
     Q_OBJECT
 
 public:
     explicit login(QWidget *parent = nullptr);
-
+	void list_events(QListWidget* listWidget);
 private slots:
     void selectClicked();
-
 private:
     QPushButton *selectButton;
     QPushButton *addButton;

@@ -1,6 +1,7 @@
 #include "reg.h"
-#include <QtWidgets>
 #include "gui.h"
+#include <QtWidgets>
+
 
 Reg::Reg(QWidget *parent) :
     QDialog(parent)
@@ -41,7 +42,7 @@ Reg::Reg(QWidget *parent) :
 }
 
 void Reg::regClicked(){
-	if (user_registration(nameEdit->text().toStdString(), passEdit->text().toStdString(), fnameEdit->text().toStdString(), lnameEdit->text().toStdString(), mailEdit->text().toStdString()))
+	if(!gui::user_registration(nameEdit->text().toStdString(), passEdit->text().toStdString(), fnameEdit->text().toStdString(), lnameEdit->text().toStdString(), mailEdit->text().toStdString()))
 	{
 		cancel();
 	}

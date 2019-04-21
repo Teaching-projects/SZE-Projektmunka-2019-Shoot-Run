@@ -1,23 +1,21 @@
 #include "login.h"
 #include <QtWidgets>
 
-
-
-void feltolt(QListWidget* listWidget) {
-	typedef odb::query<event> query;
-	typedef odb::result<event> result;
-
-	QSharedPointer<odb::core::database> db = create_database();
+void login::list_events(QListWidget* listWidget) {
+	typedef odb::query<class::event> query;
+	typedef odb::result<class::event> result;
+	DB TODO;
+	QSharedPointer<odb::core::database> db = TODO.create_database();
 	odb::session s;
 	odb::core::transaction t(db->begin());
-
-	result r(db->query<event>());
+	result r(db->query<class::event>());
 
 	for (result::iterator i(r.begin()); i != r.end(); ++i)
 	{
-		new QListWidgetItem(i->getname().append(i->getdate().toString()), listWidget);
+		new QListWidgetItem(i->getname().append("\t").append(i->getdate().toString("yyyy.MM.dd")), listWidget);
 	}
 }
+
 login::login(QWidget *parent) :
     QDialog(parent)
 {
@@ -43,13 +41,9 @@ login::login(QWidget *parent) :
     addeventdialog=new AddEvent(this);
     finddialog=new FindDialog(this);
 
-
-	
     listWidget=new QListWidget(this);
-	feltolt(listWidget);
-    new QListWidgetItem(tr("100m"), listWidget);
-    new QListWidgetItem(tr("Marathon"), listWidget);
-    new QListWidgetItem(tr("Tájfutás"), listWidget);
+	list_events(listWidget);
+
 
     QVBoxLayout *buttonLayout = new QVBoxLayout;
     buttonLayout->addWidget(selectButton);

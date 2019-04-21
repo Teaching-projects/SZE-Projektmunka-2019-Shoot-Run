@@ -1,11 +1,5 @@
 #ifndef FILTEREDDIALOG_H
 #define FILTEREDDIALOG_H
-#include "event.h"
-#include "event-odb.hxx"
-#include "database.h"
-#include <odb/session.hxx>
-#include <odb/transaction.hxx>
-#include <odb/qt/lazy-ptr.hxx>
 #include <QDialog>
 
 class QLabel;

@@ -603,7 +603,7 @@ namespace odb
         i.submitter_id_null = is_null;
       }
       else
-        throw null_pointer ();
+        i.submitter_id_null = 1;
     }
 
     return grew;

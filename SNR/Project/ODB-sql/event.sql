@@ -10,7 +10,7 @@ CREATE TABLE `event` (
   `submit_date` DATETIME NULL,
   `event_date` DATETIME NULL,
   `event_accepted` TINYINT(1) NOT NULL,
-  `submitter_id` INT UNSIGNED NOT NULL)
+  `submitter_id` INT UNSIGNED NULL)
  ENGINE=InnoDB;
 
 /*

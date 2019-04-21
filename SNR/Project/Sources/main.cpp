@@ -1,8 +1,10 @@
 #include <iostream>
 #include <memory>
 #include <iomanip>
-//#include <odb/session.hxx>
-//#include <odb/transaction.hxx>
+
+#include <odb/session.hxx>
+#include <odb/transaction.hxx>
+
 #include <odb/qt/lazy-ptr.hxx>
 #include <QApplication>
 //#include <QCryptographicHash>
@@ -25,7 +27,7 @@
 #include "database.h"
 #include "gui.h"
 #include "exif.h"
-
+#include "qdownloader.h"
 
 #include <windows.h>
 #include <stdio.h>
@@ -138,65 +140,28 @@ int main(int argc, char *argv[])
 	freopen("CON", "w", stderr);
 	freopen("CON", "r", stdin);
 
-	/*{
-
+	
+		/*DB TODO;
+		QSharedPointer<odb::core::database> db = TODO.create_database();
 		odb::core::transaction t(db->begin());
 
 		QDateTime now = QDateTime::currentDateTime();
-
 		QSharedPointer<user> user1(new user("ati703", "testPW", "Attila", "Lebbenszki", "lebbenszkiattilagmailcom", now));
-		QSharedPointer<user> user2(new user("patrikkocsis", "testPW", "Patrik", "Patrik", "patrikkocsisgmailcom", now));
-		QSharedPointer<event> event1(new event("first"));
-		QSharedPointer<event> event2(new event("second"));
-		QSharedPointer<event> event3(new event("third"));
-		QSharedPointer<image> image1(new image("/randompath", event1, user1, now, ran(0.0, 100.0), ran(0.0, 100.0)));
-		QSharedPointer<image> image2(new image("/randompath", event1, user1, now, ran(0.0, 100.0), ran(0.0, 100.0)));
-		QSharedPointer<image> image3(new image("/randompath", event1, user1, now, ran(0.0, 100.0), ran(0.0, 100.0)));
-		QSharedPointer<image> image4(new image("/randompath", event2, user2, now, ran(0.0, 100.0), ran(0.0, 100.0)));
-		QSharedPointer<image> image5(new image("/randompath", event2, user2, now, ran(0.0, 100.0), ran(0.0, 100.0)));
-		QSharedPointer<image> image6(new image("/randompath", event3, user2, now, ran(0.0, 100.0), ran(0.0, 100.0)));
-		QSharedPointer<track> track1(new track(event1, user1));
-		QSharedPointer<track> track2(new track(event2, user2));
-		QSharedPointer<track> track3(new track(event3, user2));
+		QSharedPointer<event> event1(new event("first_event", now));
+		QSharedPointer<event> event2(new event("second_event", now));
+		QSharedPointer<event> event3(new event("third_event", now));
 
-		QSharedPointer<tardis> t1(new tardis(track1, ran(0.0, 100.0), ran(0.0, 100.0), now));
-		QSharedPointer<tardis> t2(new tardis(track1, ran(0.0, 100.0), ran(0.0, 100.0), now));
-		QSharedPointer<tardis> t3(new tardis(track1, ran(0.0, 100.0), ran(0.0, 100.0), now));
-		QSharedPointer<tardis> t4(new tardis(track2, ran(0.0, 100.0), ran(0.0, 100.0), now));
-		QSharedPointer<tardis> t5(new tardis(track2, ran(0.0, 100.0), ran(0.0, 100.0), now));
-		QSharedPointer<tardis> t6(new tardis(track3, ran(0.0, 100.0), ran(0.0, 100.0), now));
-		QSharedPointer<tardis> t7(new tardis(track3, ran(0.0, 100.0), ran(0.0, 100.0), now));
-		QSharedPointer<tardis> t8(new tardis(track3, ran(0.0, 100.0), ran(0.0, 100.0), now));
-
-		image1->event(event1);	image2->event(event1);	image3->event(event1);	image4->event(event2);	image5->event(event2);	 image6->event(event3);
-		event1->images().push_back(image1);		event1->images().push_back(image2);	event1->images().push_back(image3);
-		event2->images().push_back(image4);		event2->images().push_back(image5);
-		event3->images().push_back(image6);
-		event1->user(user1); 	event2->user(user1); 	event3->user(user2);
-
-		image1->user(user1);	image2->user(user1);	image3->user(user1);	image4->user(user2);	image5->user(user2);	 image6->user(user2);
-		user1->images().push_back(image1);	user1->images().push_back(image2);	user1->images().push_back(image3);
-		user2->images().push_back(image4);	user2->images().push_back(image5);	user2->images().push_back(image6);
-
-		track1->event(event1);	track2->event(event2);  track3->event(event3);
-		track1->user(user1);	track2->user(user2);	track3->user(user2);
-		t1->track(track1);		t2->track(track1);		t3->track(track1);		t4->track(track2);		t5->track(track2);		t6->track(track3);		t7->track(track3);		t8->track(track3);
-		track1->tardises().push_back(t1);	track1->tardises().push_back(t2);	track1->tardises().push_back(t3);
-		track2->tardises().push_back(t4);	track2->tardises().push_back(t5);
-		track3->tardises().push_back(t6);	track3->tardises().push_back(t7);	track3->tardises().push_back(t8);
+		event1->user(user1); 	event2->user(user1); 	event3->user(user1);
+		db->persist(user1);
+		db->persist(event1);	db->persist(event2);	db->persist(event3);
+		t.commit();*/
 
 
-		db->persist(user1);		db->persist(user2);
-		db->persist(event1);	db->persist(event2); 	db->persist(event3);
-		db->persist(image1);	db->persist(image2);	db->persist(image3);	db->persist(image4);	db->persist(image5);	db->persist(image6);
-		db->persist(track1);	db->persist(track2);	db->persist(track3);
-		db->persist(t1);		db->persist(t2);		db->persist(t3);		db->persist(t4);		db->persist(t5);		db->persist(t6);		db->persist(t7);		db->persist(t8);
 
-		t.commit();
-
-	}*/
-
-
+	//QDownloader imagedownload;
+	//imagedownload.setFile("https://dl.dropboxusercontent.com/s/nw6wd1msc7ifuou/blue.png");
+	//https://dl.dropboxusercontent.com/s/x65l1cu3eoin9kt/green.png
+	//https://dl.dropboxusercontent.com/s/cs2bnp80frxttpe/red.png
 
 	QApplication a(argc, argv);
     gui gui;
