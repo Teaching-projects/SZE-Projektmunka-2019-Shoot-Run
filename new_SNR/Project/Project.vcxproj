@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ODB-cxx\event-odb.cxx" />
+    <ClCompile Include="ODB-cxx\image-odb.cxx" />
+    <ClCompile Include="ODB-cxx\tardis-odb.cxx" />
+    <ClCompile Include="ODB-cxx\track-odb.cxx" />
+    <ClCompile Include="ODB-cxx\user-odb.cxx" />
+    <ClCompile Include="Sources\exif.cpp" />
+    <ClCompile Include="Sources\GUI\addeventdialog.cpp" />
+    <ClCompile Include="Sources\GUI\adminwindow.cpp" />
+    <ClCompile Include="Sources\GUI\eventwindow.cpp" />
+    <ClCompile Include="Sources\GUI\mainwindow.cpp" />
+    <ClCompile Include="Sources\GUI\picturelist.cpp" />
+    <ClCompile Include="Sources\main.cpp" />
+    <ClCompile Include="Sources\ODB\event.cpp" />
+    <ClCompile Include="Sources\ODB\image.cpp" />
+    <ClCompile Include="Sources\ODB\tardis.cpp" />
+    <ClCompile Include="Sources\ODB\track.cpp" />
+    <ClCompile Include="Sources\ODB\user.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Headers\GUI\addeventdialog.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Headers\GUI\adminwindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Headers\GUI\eventwindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Headers\GUI\mainwindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Headers\GUI\picturelist.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\exif.h" />
+    <ClInclude Include="Headers\ODB\database.h" />
+    <ClInclude Include="Headers\ODB\event.h" />
+    <ClInclude Include="Headers\ODB\image.h" />
+    <ClInclude Include="Headers\ODB\tardis.h" />
+    <ClInclude Include="Headers\ODB\track.h" />
+    <ClInclude Include="Headers\ODB\user.h" />
+    <ClInclude Include="ODB-hxx\event-odb.hxx" />
+    <ClInclude Include="ODB-hxx\image-odb.hxx" />
+    <ClInclude Include="ODB-hxx\tardis-odb.hxx" />
+    <ClInclude Include="ODB-hxx\track-odb.hxx" />
+    <ClInclude Include="ODB-hxx\user-odb.hxx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Files\track.gpx" />
+    <None Include="ODB-ixx\event-odb.ixx" />
+    <None Include="ODB-ixx\image-odb.ixx" />
+    <None Include="ODB-ixx\tardis-odb.ixx" />
+    <None Include="ODB-ixx\track-odb.ixx" />
+    <None Include="ODB-ixx\user-odb.ixx" />
+    <None Include="ODB-sql\event.sql" />
+    <None Include="ODB-sql\image.sql" />
+    <None Include="ODB-sql\tardis.sql" />
+    <None Include="ODB-sql\track.sql" />
+    <None Include="ODB-sql\user.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="UI\addeventdialog.ui" />
+    <QtUic Include="UI\adminwindow.ui" />
+    <QtUic Include="UI\eventwindow.ui" />
+    <QtUic Include="UI\mainwindow.ui" />
+    <QtUic Include="UI\picturelist.ui" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
+    <Keyword>Qt4VSv1.0</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">
+    <QtMsBuild>$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)$(Platform)_$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDir)Project\Sources;$(SolutionDir)Project\Sources\GUI;$(SolutionDir)Project\Sources\ODB;$(SolutionDir)Project\Headers;$(SolutionDir)Project\Headers\GUI;$(SolutionDir)Project\Headers\ODB;$(SolutionDir)Project\Libraries\libodb;$(SolutionDir)Project\Libraries\libodb-qt;$(SolutionDir)Project\Libraries\libodb-mysql;$(SolutionDir)Project\Libraries\mysql\include;$(SolutionDir)Project\Files;$(SolutionDir)Project\ODB-cxx;$(SolutionDir)Project\ODB-hxx;$(SolutionDir)Project\ODB-ixx;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Project\Libraries\libodb\lib64;$(SolutionDir)Project\Libraries\libodb-qt\lib64;$(SolutionDir)Project\Libraries\libodb-mysql\lib64;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)$(Platform)_$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)$(Platform)_$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDir)Project\Sources;$(SolutionDir)Project\Sources\GUI;$(SolutionDir)Project\Sources\ODB;$(SolutionDir)Project\Headers;$(SolutionDir)Project\Headers\GUI;$(SolutionDir)Project\Headers\ODB;$(SolutionDir)Project\Libraries\libodb;$(SolutionDir)Project\Libraries\libodb-qt;$(SolutionDir)Project\Libraries\libodb-mysql;$(SolutionDir)Project\Libraries\mysql\include;$(SolutionDir)Project\Files;$(SolutionDir)Project\ODB-cxx;$(SolutionDir)Project\ODB-hxx;$(SolutionDir)Project\ODB-ixx;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Project\Libraries\libodb\lib64;$(SolutionDir)Project\Libraries\libodb-qt\lib64;$(SolutionDir)Project\Libraries\libodb-mysql\lib64;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)$(Platform)_$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_SECURE_NO_DEPRECATE;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_CONCURRENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <DisableSpecificWarnings>4068;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>qtmaind.lib;odb-d.lib;odb-mysql-d.lib;odb-qt-d.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Concurrentd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <QtMoc>
+      <OutputFile>$(SolutionDir)GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <IncludePath>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;%(AdditionalIncludeDirectories)</IncludePath>
+      <Define>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_SECURE_NO_DEPRECATE;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_CONCURRENT_LIB;%(PreprocessorDefinitions)</Define>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <OutputFile>$(SolutionDir)GeneratedFiles\ui_%(Filename).h</OutputFile>
+    </QtUic>
+    <QtRcc>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <OutputFile>.\GeneratedFiles\qrc_%(Filename).cpp</OutputFile>
+    </QtRcc>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_SECURE_NO_DEPRECATE;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_CONCURRENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat />
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <DisableSpecificWarnings>4068;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>qtmain.lib;odb.lib;odb-mysql.lib;odb-qt.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Concurrent.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <QtMoc>
+      <OutputFile>$(SolutionDir)GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <IncludePath>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;%(AdditionalIncludeDirectories)</IncludePath>
+      <Define>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_SECURE_NO_DEPRECATE;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_CONCURRENT_LIB;%(PreprocessorDefinitions)</Define>
+    </QtMoc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <OutputFile>$(SolutionDir)GeneratedFiles\ui_%(Filename).h</OutputFile>
+    </QtUic>
+    <QtRcc>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <OutputFile>.\GeneratedFiles\qrc_%(Filename).cpp</OutputFile>
+    </QtRcc>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_x64="5.12.3" MocOptions="" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
