@@ -28,9 +28,10 @@ public:
     odbevent() {}
     odbevent(std::string event_name, QDateTime event_date):event_name(event_name),event_date(event_date){submit_date = QDateTime::currentDateTime();}
     void Accept();
-    QString getname();
-    QDateTime getdate();
-    int getid();
+    QString getName();
+    QDateTime getDate();
+    int getId();
+    bool isAccepted();
 
 private:
 	friend class odb::access;

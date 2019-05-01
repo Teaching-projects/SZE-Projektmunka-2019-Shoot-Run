@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <QListWidget>//TODO
+
 class image;
+class tardis;
 
 namespace Ui {
 class picturelist;
@@ -20,6 +22,9 @@ private slots:
     void on_image_upload_clicked();
     void on_track_upload_clicked();
     void on_download_clicked();
+    void on_searchbygpx_clicked();
+    void on_horizontalSlider_valueChanged(int value);
+
 private:
     Ui::picturelist *ui;
     void delete_track();
@@ -33,10 +38,10 @@ private:
     int current_event_int;
     std::string current_user_string;
     QList<image*> imagepointer_list;
+    QList<tardis*> tardispointer_list;
     void download_images();
     QList<int> getselectedimagelist();
     QString GetRandomString();
-
 };
 
 #endif // PICTURELIST_H

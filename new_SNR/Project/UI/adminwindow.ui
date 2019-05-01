@@ -47,7 +47,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="admin_eventlist">
       <property name="minimumSize">
@@ -156,7 +156,7 @@
         <number>0</number>
        </property>
        <property name="columnCount">
-        <number>3</number>
+        <number>4</number>
        </property>
        <attribute name="horizontalHeaderVisible">
         <bool>false</bool>
@@ -206,6 +206,11 @@
        </column>
        <column>
         <property name="text">
+         <string>Not accepted images</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>not so hidden column</string>
         </property>
        </column>
@@ -221,14 +226,54 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QPushButton" name="filter_reset">
+         <widget class="QPushButton" name="event_add">
           <property name="text">
-           <string>Reset</string>
+           <string>Add</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="filter_name">
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="event_accept">
+          <property name="text">
+           <string>Accept</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="event_delete">
+          <property name="text">
+           <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="event_name">
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
@@ -238,21 +283,21 @@
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="filter_accepted">
+         <widget class="QRadioButton" name="event_accepted">
           <property name="text">
            <string>Accepted</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="filter_notaccepted">
+         <widget class="QRadioButton" name="event_notaccepted">
           <property name="text">
            <string>Waiting for validation</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="filter_both">
+         <widget class="QRadioButton" name="event_both">
           <property name="text">
            <string>Both</string>
           </property>
@@ -308,7 +353,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="lavel_to">
+           <widget class="QLabel" name="lavbel_to">
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
             </property>
@@ -323,23 +368,9 @@
          </layout>
         </item>
         <item>
-         <widget class="QPushButton" name="filter">
+         <widget class="QPushButton" name="event_filterreset">
           <property name="text">
-           <string>Filter</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="event_accept">
-          <property name="text">
-           <string>Accept</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="event_delete">
-          <property name="text">
-           <string>Delete</string>
+           <string>Reset</string>
           </property>
          </widget>
         </item>
@@ -360,13 +391,6 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="switchto_image">
-          <property name="text">
-           <string>Switch to image validation</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="logout_button">
           <property name="text">
            <string>Logout</string>
@@ -377,226 +401,6 @@
          <widget class="QPushButton" name="exit_button">
           <property name="text">
            <string>Exit</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="admin_imagelist">
-      <property name="minimumSize">
-       <size>
-        <width>800</width>
-        <height>800</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>800</width>
-        <height>800</height>
-       </size>
-      </property>
-      <widget class="QTableWidget" name="event_list_image">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>30</x>
-         <y>20</y>
-         <width>500</width>
-         <height>750</height>
-        </rect>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>500</width>
-         <height>750</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>400</width>
-         <height>350</height>
-        </size>
-       </property>
-       <property name="contextMenuPolicy">
-        <enum>Qt::NoContextMenu</enum>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
-       </property>
-       <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
-       </property>
-       <property name="sizeAdjustPolicy">
-        <enum>QAbstractScrollArea::AdjustToContents</enum>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="tabKeyNavigation">
-        <bool>false</bool>
-       </property>
-       <property name="showDropIndicator" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="dragDropOverwriteMode">
-        <bool>false</bool>
-       </property>
-       <property name="selectionMode">
-        <enum>QAbstractItemView::SingleSelection</enum>
-       </property>
-       <property name="selectionBehavior">
-        <enum>QAbstractItemView::SelectRows</enum>
-       </property>
-       <property name="showGrid">
-        <bool>false</bool>
-       </property>
-       <property name="gridStyle">
-        <enum>Qt::NoPen</enum>
-       </property>
-       <property name="rowCount">
-        <number>0</number>
-       </property>
-       <property name="columnCount">
-        <number>3</number>
-       </property>
-       <attribute name="horizontalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="horizontalHeaderCascadingSectionResizes">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>250</number>
-       </attribute>
-       <attribute name="horizontalHeaderHighlightSections">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="horizontalHeaderMinimumSectionSize">
-        <number>250</number>
-       </attribute>
-       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderHighlightSections">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <column>
-        <property name="text">
-         <string>Event name</string>
-        </property>
-        <property name="textAlignment">
-         <set>AlignCenter</set>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Date</string>
-        </property>
-        <property name="textAlignment">
-         <set>AlignCenter</set>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>well-hidden</string>
-        </property>
-        <property name="textAlignment">
-         <set>AlignCenter</set>
-        </property>
-       </column>
-      </widget>
-      <widget class="QWidget" name="verticalLayoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>570</x>
-         <y>50</y>
-         <width>181</width>
-         <height>671</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QPushButton" name="select_button">
-          <property name="text">
-           <string>Select</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="add_button">
-          <property name="text">
-           <string>Add</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="search_buton">
-          <property name="text">
-           <string>Search</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="search_name">
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="placeholderText">
-           <string>Event name</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="search_reset">
-          <property name="text">
-           <string>Reset</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Maximum</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>800</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="switchto_event">
-          <property name="text">
-           <string>Switch to event validation</string>
           </property>
          </widget>
         </item>
@@ -698,7 +502,7 @@
         <enum>QListView::Static</enum>
        </property>
        <property name="flow">
-        <enum>QListView::TopToBottom</enum>
+        <enum>QListView::LeftToRight</enum>
        </property>
        <property name="isWrapping" stdset="0">
         <bool>false</bool>

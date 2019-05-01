@@ -15,8 +15,8 @@ class DB {
 public:
     DB() {}
    static QSharedPointer<odb::core::database> create_database() {
-        QSharedPointer<odb::core::database> db(new odb::mysql::database("ZNUNonRurv", "ys7Yj0Rpjp", "ZNUNonRurv", "remotemysql.com", 3306));
-        //QSharedPointer<odb::core::database> db(new odb::mysql::database("root", "", "inorder"));
+        //QSharedPointer<odb::core::database> db(new odb::mysql::database("ZNUNonRurv", "ys7Yj0Rpjp", "ZNUNonRurv", "remotemysql.com", 3306));
+        QSharedPointer<odb::core::database> db(new odb::mysql::database("root", "", "inorder"));
         return db;
     }
 };

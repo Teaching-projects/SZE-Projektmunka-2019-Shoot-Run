@@ -10,6 +10,8 @@
 #include <QDebug>
 #include <QtSvg/QSvgRenderer>
 #include <QtConcurrentRun>
+#include <QElapsedTimer>
+#include <QSet>
 
 #include "database.h"
 #include "user.h"
@@ -23,6 +25,7 @@
 #include "tardis.h"
 #include "tardis-odb.hxx"
 #include "exif.h"
+
 
 picturelist::picturelist(QWidget *parent) : QWidget(parent), ui(new Ui::picturelist){
     ui->setupUi(this);
@@ -61,11 +64,22 @@ int picturelist::isthereatrack(){
     odb::session s;
     typedef odb::query<track>	track_query;
     typedef odb::query<user>	user_query;
+    typedef odb::query<tardis>	tardis_query;
+    typedef odb::result<tardis>	tardis_result;
 
     QSharedPointer<user> current_user = db->query_one<user>(user_query::user_name == current_user_string);
     QSharedPointer<track> result_track = db->query_one<track>(track_query::user_id == current_user->getID() && track_query::event_id == current_event_int);
-    if(result_track.get() != nullptr)
+
+
+    if(result_track.get() != nullptr){
+        int track_id = result_track->getID();
+        tardis_result r(db->query<tardis>((tardis_query::track_id == track_id) + "ORDER BY" + tardis_query::tardis_date + "ASC"));
+           QDateTime last_date;
+           for(auto iterator : r)
+                if(last_date != iterator.getDate())
+                    this->tardispointer_list << new tardis(iterator);
         return 1;
+    }
     return 0;
 }
 
@@ -91,7 +105,7 @@ void picturelist::list_images(){
     typedef odb::query<image> query;
     typedef odb::result<image> result;
     odb::core::transaction t(db->begin());
-    result r(db->query<image>(query::event_id == current_event_int && query::image_accepted == true));
+    result r(db->query<image>((query::event_id == current_event_int && query::image_accepted == true)+ "ORDER BY" + query::image_date + "ASC"));
     for (auto value : r) {
         imagepointer_list << new image(value);
         QPixmap imagefrom;
@@ -199,7 +213,7 @@ int picturelist::upload_track(QString path_Q,int current_event_int,std::string c
         if (inputStream.isStartElement()) {
             odb::core::transaction t(db->begin());
             QString name = inputStream.name().toString();
-            if (name == "wpt") {
+            if (name == "trkpt") {
                 lat = inputStream.attributes().value("lat").toDouble();
                 lon = inputStream.attributes().value("lon").toDouble();
             }
@@ -254,4 +268,103 @@ QString picturelist::GetRandomString(){
 
 void picturelist::on_download_clicked(){
     download_images();
+}
+
+void picturelist::on_searchbygpx_clicked(){
+    QElapsedTimer timer;
+        timer.start();
+    ui->image_list->clear();
+    QList<int> lista;
+    int index = 0;
+    for(auto i : tardispointer_list){
+        for(int index=0;index<imagepointer_list.size();index++)
+            if(i->getDate().addSecs(-7)<= imagepointer_list.at(index)->getDate() && imagepointer_list.at(index)->getDate() <= i->getDate().addSecs(7)){
+                double lat1r, lon1r, lat2r, lon2r, u, v;
+                lat1r = (((i->getLatitude())*3.14))/180;
+                lon1r = (((i->getLongitude())*3.14))/180;
+                lat2r = (((imagepointer_list.at(index)->getLatitude())*3.14))/180;
+                lon2r = (((imagepointer_list.at(index)->getLongitude())*3.14))/180;
+                u = sin((lat2r - lat1r)/2);
+                v = sin((lon2r - lon1r)/2);
+                if((2.0 * 6371.0 * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v))*1000)<20){
+                lista << index;
+                qDebug() << imagepointer_list.at(index)->getDate() << "\t\t" << 2.0 * 6371.0 * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v))*1000;
+                }
+            }
+            index++;
+    }
+    QSet<int> eredmeny = lista.toSet();
+    for(auto i : eredmeny){
+        QPixmap imagefrom;
+        imagefrom.loadFromData(imagepointer_list.at(i)->getBlob());
+        ui->image_list->addItem(new QListWidgetItem(QIcon(imagefrom),""));
+                qDebug() << i<<"\t\t"<<eredmeny.count();
+   }
+     qDebug() << timer.elapsed();
+
+    }/*
+
+
+    QElapsedTimer timer;
+    timer.start();
+    QList<int> lista;
+    int index = 0;
+    int lowest_index = 0;
+    for(auto i : tardispointer_list){
+        if(lowest_index<imagepointer_list.size()-1){
+            while(i->getDate().addSecs(-7)>=imagepointer_list.at(lowest_index)->getDate()){
+                lowest_index++;
+                index=lowest_index;
+        }}
+        else{
+            index=lowest_index;
+        }
+        while(index < imagepointer_list.size()-1 && imagepointer_list.at(index)->getDate() <= i->getDate().addSecs(7)){
+            if(i->getDate().addSecs(-7)<= imagepointer_list.at(index)->getDate() && imagepointer_list.at(index)->getDate() <= i->getDate().addSecs(7)){
+                double lat1r, lon1r, lat2r, lon2r, u, v;
+                lat1r = (((i->getLatitude())*3.14))/180;
+                lon1r = (((i->getLongitude())*3.14))/180;
+                lat2r = (((imagepointer_list.at(index)->getLatitude())*3.14))/180;
+                lon2r = (((imagepointer_list.at(index)->getLongitude())*3.14))/180;
+                u = sin((lat2r - lat1r)/2);
+                v = sin((lon2r - lon1r)/2);
+                if((2.0 * 6371.0 * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v))*1000)<20){
+                    lista << index;
+                qDebug() << imagepointer_list.at(index)->getDate() << "\t\t" << 2.0 * 6371.0 * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v))*1000;
+                }
+            }
+            index++;
+        }
+    }        qDebug() << "The slow operation took" << timer.elapsed() << "milliseconds";
+
+        QSet<int> eredmeny = lista.toSet();
+        for(auto i : eredmeny)
+            qDebug() << i;
+}
+    /*for(auto i : tardispointer_list){
+        if(index<imagepointer_list.size())
+            while(!(i->getDate().addSecs(-7)>imagepointer_list.at(index)->getDate())){
+                lowest_index++;
+                index=lowest_index;
+        }
+        while(imagepointer_list.at(index)->getDate() <= i->getDate().addSecs(7)){
+            if(i->getDate().addSecs(-7)<= imagepointer_list.at(index)->getDate() && imagepointer_list.at(index)->getDate() <= i->getDate().addSecs(7)){
+                double lat1r, lon1r, lat2r, lon2r, u, v;
+                lat1r = (((i->getLatitude())*3.14))/180;
+                lon1r = (((i->getLongitude())*3.14))/180;
+                lat2r = (((imagepointer_list.at(index)->getLatitude())*3.14))/180;
+                lon2r = (((imagepointer_list.at(index)->getLongitude())*3.14))/180;
+                u = sin((lat2r - lat1r)/2);
+                v = sin((lon2r - lon1r)/2);
+                qDebug() << QString::number(2.0 * 6371.0 * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v))*1000) << index << "\t\t"<< lowest_index<<"\t\t<"<<imagepointer_list.size();
+            }
+            index++;
+        }
+    }*/
+
+
+
+void picturelist::on_horizontalSlider_valueChanged(int value)
+{
+    ui->distance->setText(QString::number(value));
 }

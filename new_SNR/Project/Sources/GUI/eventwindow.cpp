@@ -63,9 +63,9 @@ void eventwindow::search_word(){
     if(!r.empty()){
         for (result::iterator i(r.begin()); i != r.end(); ++i){
             ui->event_list->setRowCount(ui->event_list->rowCount() + 1);
-            ui->event_list->setItem(row, 0, new QTableWidgetItem(i->getname()));
-            ui->event_list->setItem(row, 1, new QTableWidgetItem(i->getdate().toString("yyyy-MM-dd")));
-            ui->event_list->setItem(row, 2, new QTableWidgetItem(QString::number(i->getid())));
+            ui->event_list->setItem(row, 0, new QTableWidgetItem(i->getName()));
+            ui->event_list->setItem(row, 1, new QTableWidgetItem(i->getDate().toString("yyyy-MM-dd")));
+            ui->event_list->setItem(row, 2, new QTableWidgetItem(QString::number(i->getId())));
             row++;
         }
         t.commit();
@@ -75,9 +75,9 @@ void eventwindow::search_word(){
         result r(db->query<odbevent>(query::event_accepted == 1));
         for (result::iterator i(r.begin()); i != r.end(); ++i){
             ui->event_list->setRowCount(ui->event_list->rowCount() + 1);
-                 ui->event_list->setItem(row, 0, new QTableWidgetItem(i->getname()));
-                 ui->event_list->setItem(row, 1, new QTableWidgetItem(i->getdate().toString("yyyy-MM-dd")));
-                 ui->event_list->setItem(row, 2, new QTableWidgetItem(QString::number(i->getid())));
+                 ui->event_list->setItem(row, 0, new QTableWidgetItem(i->getName()));
+                 ui->event_list->setItem(row, 1, new QTableWidgetItem(i->getDate().toString("yyyy-MM-dd")));
+                 ui->event_list->setItem(row, 2, new QTableWidgetItem(QString::number(i->getId())));
                  row+=1;
         }
         t.commit();
@@ -93,9 +93,9 @@ void eventwindow::show_eventlist(){
         int row=0;
         for (result::iterator i(r.begin()); i != r.end(); ++i){
             ui->event_list->setRowCount(ui->event_list->rowCount() + 1);
-                 ui->event_list->setItem(row, 0, new QTableWidgetItem(i->getname()));
-                 ui->event_list->setItem(row, 1, new QTableWidgetItem(i->getdate().toString("yyyy-MM-dd")));
-                 ui->event_list->setItem(row, 2, new QTableWidgetItem(QString::number(i->getid())));
+                 ui->event_list->setItem(row, 0, new QTableWidgetItem(i->getName()));
+                 ui->event_list->setItem(row, 1, new QTableWidgetItem(i->getDate().toString("yyyy-MM-dd")));
+                 ui->event_list->setItem(row, 2, new QTableWidgetItem(QString::number(i->getId())));
                  row++;
         }
         t.commit();
