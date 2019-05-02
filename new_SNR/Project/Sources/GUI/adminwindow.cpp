@@ -44,6 +44,8 @@ adminwindow::adminwindow(QWidget *parent) : QWidget(parent), ui(new Ui::adminwin
 adminwindow::~adminwindow(){
     if(!imagepointer_list.isEmpty())
         this->imagepointer_list.clear();
+    if(!eventpointer_list.isEmpty())
+        this->eventpointer_list.clear();
     delete ui;
 }
 
@@ -51,7 +53,7 @@ void adminwindow::set_options(){
     ui->date_from-> setMaximumDateTime(QDateTime::currentDateTime());
     ui->date_to->   setMaximumDateTime(QDateTime::currentDateTime());
     ui->date_to->   setDateTime(QDateTime::currentDateTime());
-    ui->image_both->click();
+    ui->image_both->setChecked(true);
 }
 
 void adminwindow::on_logout_button_clicked(){
@@ -134,6 +136,7 @@ void adminwindow::loadfrom_imagepointer(){
 }
 
 void adminwindow::on_event_refresh_clicked(){
+    set_options();
     load_events();
     loadfrom_eventpointer();
 }
@@ -166,17 +169,13 @@ void adminwindow::loadfrom_eventpointer(){
 
 void adminwindow::accept_events(QList<int> selected){
     QSharedPointer<odb::core::database> db = DB::create_database();
-    typedef odb::query<odbevent> query;
-    typedef odb::result<odbevent> result;
+    odb::session s;
     odb::core::transaction t(db->begin());
-    int index = 0;
-    result event_result(db->query<odbevent>(query::event_id.in_range(selected.begin(),selected.end()) ));
-    for (result::iterator event_iterator(event_result.begin()); event_iterator != event_result.end(); ++event_iterator){
-        event_iterator->Accept();
-        db->update(*event_iterator);
-         if(ui->event_notaccepted->isChecked())
-            ui->event_list->hideRow(selected.at(index));
-         index++;
+    for(auto iterator : selected){
+        eventpointer_list.at(iterator)->Accept();
+        db->update(*eventpointer_list.at(iterator));
+        if(ui->event_notaccepted->isChecked())
+            ui->event_list->hideRow(iterator);
     }
     t.commit();
 }
@@ -224,7 +223,7 @@ void adminwindow::filter_events(){
     }
     else if(ui->event_notaccepted->isChecked()){
         for(auto iterator : eventpointer_list){
-            if(iterator->getName().contains(event_name, Qt::CaseInsensitive) && (!iterator->isAccepted()) && iterator->getDate() >= date_from && date_from >= iterator->getDate())
+            if(iterator->getName().contains(event_name, Qt::CaseInsensitive) && !iterator->isAccepted() && iterator->getDate() >= date_from && date_to >= iterator->getDate())
                 ui->event_list->showRow(index);
             index++;
         }
@@ -284,7 +283,6 @@ void adminwindow::delete_images(QList<int> selected){
     odb::session s;
     odb::core::transaction t(db->begin());
     for(auto iterator : selected){
-        qDebug() << selected;
         db->erase(*imagepointer_list.at(iterator));
         ui->image_list->model()->removeRow(iterator);
         delete imagepointer_list.takeAt(iterator);

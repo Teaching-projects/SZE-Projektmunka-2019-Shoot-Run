@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "eventwindow.h"
+//#include "eventwindow.h"
 #include "adminwindow.h"
+#include "userwindow.h"
 
 #include <QMessageBox>
 #include <QFormLayout>
@@ -79,8 +80,8 @@ void mainwindow::on_login_ok_clicked(){
             this->close();
         }
         else{
-        eventwindow* event_window = new eventwindow;
-        event_window->show();
+        userwindow* user_window = new userwindow;
+        user_window->show();
         this->close();
         }
     }

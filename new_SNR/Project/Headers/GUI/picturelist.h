@@ -2,7 +2,7 @@
 #define PICTURELIST_H
 
 #include <QWidget>
-#include <QListWidget>//TODO
+#include <QListWidget>
 
 class image;
 class tardis;

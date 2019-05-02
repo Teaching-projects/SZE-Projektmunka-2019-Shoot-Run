@@ -22,7 +22,8 @@ SOURCES += \
     $$PWD/ODB-cxx/image-odb.cxx \
     $$PWD/ODB-cxx/tardis-odb.cxx \
     $$PWD/ODB-cxx/track-odb.cxx \
-    $$PWD/ODB-cxx/user-odb.cxx
+    $$PWD/ODB-cxx/user-odb.cxx \
+    $$PWD/Sources/GUI/userwindow.cpp
 
 
 HEADERS += \
@@ -42,14 +43,17 @@ HEADERS += \
     $$PWD/ODB-hxx/image-odb.hxx \
     $$PWD/ODB-hxx/tardis-odb.hxx \
     $$PWD/ODB-hxx/track-odb.hxx \
-    $$PWD/ODB-hxx/user-odb.hxx
+    $$PWD/ODB-hxx/user-odb.hxx \
+    $$PWD/Headers/GUI/userwindow.h
 
 FORMS += \
     $$PWD/UI/mainwindow.ui \
     $$PWD/UI/eventwindow.ui \
     $$PWD/UI/addeventdialog.ui \
     $$PWD/UI/adminwindow.ui \
-    $$PWD/UI/picturelist.ui
+    $$PWD/UI/picturelist.ui \
+    $$PWD/UI/userwindow.ui
+
 
 LIBS += \
     -L$$PWD/Libraries/libodb/lib64/ -lodb \
