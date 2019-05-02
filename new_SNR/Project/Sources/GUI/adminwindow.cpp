@@ -12,6 +12,7 @@
 #include <io.h>
 #include <QtConcurrentRun>
 
+
 #include "database.h"
 #include "image.h"
 #include "image-odb.hxx"
@@ -29,10 +30,15 @@ adminwindow::adminwindow(QWidget *parent) : QWidget(parent), ui(new Ui::adminwin
     ui->event_list->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     ui->stackedWidget->setCurrentIndex(0);
 
+    ui->image_list->setViewMode(QListWidget::IconMode);
     ui->image_list->setResizeMode(QListWidget::Adjust);
-    //set_options();
+
     load_events();
     loadfrom_eventpointer();
+    set_options();
+    if(ui->event_accept->isEnabled())
+        ui->event_accept->setEnabled(false);
+
 }
 
 adminwindow::~adminwindow(){
@@ -46,7 +52,6 @@ void adminwindow::set_options(){
     ui->date_to->   setMaximumDateTime(QDateTime::currentDateTime());
     ui->date_to->   setDateTime(QDateTime::currentDateTime());
     ui->image_both->click();
-
 }
 
 void adminwindow::on_logout_button_clicked(){
@@ -61,36 +66,40 @@ void adminwindow::on_exit_button_clicked(){
 
 void adminwindow::image_upload_filedialog(){
     QStringList file_names = QFileDialog::getOpenFileNames(this, "Select the picture", QDir::homePath());
-    for (int i = 0; i < file_names.size(); ++i)
-        image_upload(file_names.at(i));
+    for (int i = 0; i < file_names.size(); ++i){
+        image_upload(file_names.at(i),eventpointer_list.at(last_clicked_row)->getId(), &imagepointer_list);
+        QPixmap image_;
+        image_.load(file_names.at(i));
+        ui->image_list->addItem(new QListWidgetItem(QIcon(image_), ""));
+    }
 }
-
-
-
-
-
-
 
 QList<int> adminwindow::get_selectedevents(){
     QList<int> return_list;
     for(auto iterator: ui->event_list->selectedItems()){
-        if(iterator->column()==2)
-        return_list << iterator->data(Qt::DisplayRole).toInt();
+        if(iterator->column()==0)
+            return_list << iterator->row();
     }
+    qSort(return_list.begin(),return_list.end());
+    std::reverse(return_list.begin(), return_list.end());
     return return_list;
 }
 
 QList<int> adminwindow::get_selectedimages(){
-    QList<int> return_list;
+    QList<int> return_list, return_list_inverse;
     for (auto iterator : ui->image_list->selectedItems())
         if (iterator->isSelected())
             return_list << ui->image_list->row(iterator);
+    qSort(return_list.begin(),return_list.end());
+    std::reverse(return_list.begin(), return_list.end());
     return return_list;
 }
 
 void adminwindow::load_events(){
+    if(!eventpointer_list.isEmpty())
+        this->eventpointer_list.clear();
+    ui->event_list->model()->removeRows(0, ui->event_list->rowCount());
     QSharedPointer<odb::core::database> db = DB::create_database();
-    typedef odb::query<odbevent> query;
     typedef odb::result<odbevent> result;
     odb::core::session s;
     odb::core::transaction t(db->begin());
@@ -119,31 +128,40 @@ void adminwindow::load_images(){
 void adminwindow::loadfrom_imagepointer(){
     QPixmap imagefrom;
     for (auto iterator : imagepointer_list){
-        imagefrom.loadFromData(iterator->getBlob());
+        loadfrom_blob(&imagefrom , iterator->getBlob());
         ui->image_list->addItem(new QListWidgetItem(QIcon(imagefrom), ""));
     }
 }
 
-void adminwindow::loadfrom_eventpointer(){//TODO
-    QSharedPointer<odb::core::database> db = DB::create_database();
-    typedef odb::query<odbevent>    query;
-    typedef odb::result<odbevent>   result;
-    odb::core::session s;
-    odb::core::transaction t(db->begin());
-    result r(db->query<odbevent>(query::event_accepted == 1));
-    int row=0;
-    for (result::iterator i(r.begin()); i != r.end(); ++i){
-        ui->event_list->setRowCount(ui->event_list->rowCount() + 1);
-        ui->event_list->setItem(row, 0, new QTableWidgetItem(i->getName()));
-        ui->event_list->setItem(row, 1, new QTableWidgetItem(i->getDate().toString("yyyy-MM-dd")));
-        ui->event_list->setItem(row, 2, new QTableWidgetItem(QString::number(i->getId())));
-        if(i->isAccepted())
-            ui->event_list->item(row,0)->backgroundColor().setRgb(255,85,127);
+void adminwindow::on_event_refresh_clicked(){
+    load_events();
+    loadfrom_eventpointer();
+}
 
+void adminwindow::loadfrom_blob(QPixmap *image, QByteArray blob){
+    image->loadFromData(blob);
+}
+
+void adminwindow::loadfrom_eventpointer(){
+    QSharedPointer<odb::core::database> db = DB::create_database();
+    typedef odb::query<image_per_event>   query;
+    typedef odb::result<image_per_event>   result;
+    int row=0;
+    for (auto iterator : eventpointer_list){
+        odb::core::transaction t(db->begin());
+        result count (db->query<image_per_event>(query::image::image_accepted == false));
+        QString date = iterator->getDate().toString("yyyy-MM-dd");
+        ui->event_list->setRowCount(ui->event_list->rowCount() + 1);
+        ui->event_list->setItem(row, 0, new QTableWidgetItem(iterator->getName()));
+        ui->event_list->setItem(row, 1, new QTableWidgetItem(date));
+        for(result::iterator i (count.begin ()); i != count.end (); ++i){
+            qDebug() <<iterator->getId() << "\t"<< i->event_id;
+            if(iterator->getId() == static_cast<int>(i->event_id))
+                ui->event_list->item(row,1)->setText(QString(date.append("\tTo check: ").append(QString::number(static_cast<int>(i->count)))));
+        }
+        t.commit ();
         row++;
     }
-    t.commit();
-
 }
 
 void adminwindow::accept_events(QList<int> selected){
@@ -159,23 +177,18 @@ void adminwindow::accept_events(QList<int> selected){
          if(ui->event_notaccepted->isChecked())
             ui->event_list->hideRow(selected.at(index));
          index++;
-
     }
     t.commit();
 }
 
 void adminwindow::delete_events(QList<int> selected){
     QSharedPointer<odb::core::database> db = DB::create_database();
-    typedef odb::query<odbevent> query;
-    typedef odb::result<odbevent> result;
+    odb::session s;
     odb::core::transaction t(db->begin());
-    result event_result(db->query<odbevent>(query::event_id.in_range(selected.begin(),selected.end()) ));
-    int index = 0;
-    for (result::iterator event_iterator(event_result.begin()); event_iterator != event_result.end(); ++event_iterator){
-        db->erase(*event_iterator);
-        ui->event_list->removeRow(index);
-        delete eventpointer_list.takeAt(index);
-        index++;
+    for(auto iterator : selected){
+        db->erase(*eventpointer_list.at(iterator));
+        ui->event_list->model()->removeRow(iterator);
+        delete eventpointer_list.takeAt(iterator);
     }
     t.commit();
 }
@@ -189,30 +202,68 @@ void adminwindow::filter_events(){
     int index = 0;
     if(ui->event_both->isChecked()){
         for(auto iterator : eventpointer_list){
-            if(iterator->getName().contains(event_name, Qt::CaseInsensitive) && iterator->getDate() >= date_to && date_from <= iterator->getDate())
+            if(iterator->getName().contains(event_name, Qt::CaseInsensitive) && iterator->getDate() >= date_from && date_to >= iterator->getDate())
                 ui->event_list->showRow(index);
             index++;
         }
+        if(!ui->event_delete->isEnabled())
+            ui->event_delete->setEnabled(true);
+        if(ui->event_accept->isEnabled())
+            ui->event_accept->setEnabled(false);
     }
     else if(ui->event_accepted->isChecked()){
         for(auto iterator : eventpointer_list){
-            if(iterator->getName().contains(event_name, Qt::CaseInsensitive) && iterator->isAccepted() && iterator->getDate() >= date_to && date_from <= iterator->getDate())
+            if(iterator->getName().contains(event_name, Qt::CaseInsensitive) && iterator->isAccepted() && iterator->getDate() >= date_from && date_to >= iterator->getDate())
                 ui->event_list->showRow(index);
             index++;
         }
+        if(!ui->event_delete->isEnabled())
+            ui->event_delete->setEnabled(true);
+        if(ui->event_accept->isEnabled())
+            ui->event_accept->setEnabled(false);
     }
     else if(ui->event_notaccepted->isChecked()){
         for(auto iterator : eventpointer_list){
-            if(iterator->getName().contains(event_name, Qt::CaseInsensitive) && (!iterator->isAccepted()) && iterator->getDate() >= date_to && date_from <= iterator->getDate())
+            if(iterator->getName().contains(event_name, Qt::CaseInsensitive) && (!iterator->isAccepted()) && iterator->getDate() >= date_from && date_from >= iterator->getDate())
                 ui->event_list->showRow(index);
             index++;
         }
+        if(!ui->event_delete->isEnabled())
+            ui->event_delete->setEnabled(true);
+        if(!ui->event_accept->isEnabled())
+            ui->event_accept->setEnabled(true);
     }
 }
 
-void adminwindow::filter_images()
-{
-
+void adminwindow::filter_images(){
+    for(int index = 0; index < ui->image_list->count(); ++index)
+            ui->image_list->item(index)->setHidden(true);
+    if(ui->image_both->isChecked()){
+        for(int index = 0; index < ui->image_list->count(); ++index){
+                ui->image_list->item(index)->setHidden(false);
+            }
+            if(ui->image_accept->isEnabled()){
+                ui->image_accept->setEnabled(false);
+        }
+    }
+    else if(ui->image_accepted->isChecked()){
+        for(int index = 0; index < ui->image_list->count(); ++index){
+                if(imagepointer_list.at(index)->isAccepted())
+                    ui->image_list->item(index)->setHidden(false);
+            if(ui->image_accept->isEnabled()){
+                ui->image_accept->setEnabled(false);
+            }
+        }
+    }
+    else if(ui->image_waiting->isChecked()){
+        for(int index = 0; index < ui->image_list->count(); ++index){
+            if(!imagepointer_list.at(index)->isAccepted())
+                ui->image_list->item(index)->setHidden(false);
+            if(!ui->image_accept->isEnabled()){
+                ui->image_accept->setEnabled(true);
+            }
+        }
+    }
 }
 
 void adminwindow::accept_images(QList<int> selected){
@@ -233,15 +284,16 @@ void adminwindow::delete_images(QList<int> selected){
     odb::session s;
     odb::core::transaction t(db->begin());
     for(auto iterator : selected){
+        qDebug() << selected;
         db->erase(*imagepointer_list.at(iterator));
-        ui->image_list->item(iterator)->setHidden(true);
-        imagepointer_list.removeAt(iterator);
-        delete ui->image_list->takeItem(iterator);
+        ui->image_list->model()->removeRow(iterator);
+        delete imagepointer_list.takeAt(iterator);
     }
     t.commit();
+    filter_images();
 }
 
-void adminwindow::image_upload(QString filename){
+void adminwindow::image_upload(QString filename, int current_event_id,QList<image*>* imagepointer_list){
     QFile qf(filename);
     qf.open(QIODevice::ReadOnly);
     int fd = qf.handle();
@@ -270,12 +322,13 @@ void adminwindow::image_upload(QString filename){
     typedef odb::query<user> u_query;
     typedef odb::query<odbevent> e_query;
     QSharedPointer<user>         current_user  = db->query_one<user>(u_query::user_name == "admin");
-    QSharedPointer<odbevent>     current_event = db->query_one<odbevent>(e_query::event_id == eventpointer_list.at(last_clicked_row)->getId());
+    QSharedPointer<odbevent>     current_event = db->query_one<odbevent>(e_query::event_id == current_event_id);
     QSharedPointer<image> new_image(new image(filename.toStdString(), current_event, current_user, date, result.GeoLocation.Longitude, result.GeoLocation.Latitude));
     new_image->Accept();
     db->persist(new_image);
     new_image->user(current_user);
     new_image->odbevent(current_event);
+    *imagepointer_list << new image(*new_image.data());
     current_user->images().push_back(new_image);
     current_event->images().push_back(new_image);
     db->update(current_event);
@@ -283,14 +336,13 @@ void adminwindow::image_upload(QString filename){
     t.commit();
 }
 
-
-void adminwindow::on_event_accept_clicked(){//TODO HIDDEN
+void adminwindow::on_event_accept_clicked(){
     if(get_selectedevents().empty())
         return;
     accept_events(get_selectedevents());
 }
 
-void adminwindow::on_event_delete_clicked(){//TODO HIDDEN
+void adminwindow::on_event_delete_clicked(){
         if(get_selectedevents().empty())
             return;
     delete_events(get_selectedevents());
@@ -303,30 +355,6 @@ void adminwindow::on_event_list_itemDoubleClicked(QTableWidgetItem *item){
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-/*void adminwindow::on_back_clicked(){
-    if(!imagepointer_list.isEmpty())
-        this->imagepointer_list.clear();
-    ui->image_list->clear();
-    ui->image_list->model()->removeRows(0, ui->event_list->rowCount());
-}*/
-
-
-
-/*
-void adminwindow::on_image_accept_clicked(){
-    if(!get_selectedimages().empty())
-        accept_images(get_selectedimages());
-}
-
-void adminwindow::on_image_delete_clicked(){
-    if(!get_selectedimages().empty())
-        delete_images(get_selectedimages());
-}
-*/
-
-
-
-
 void adminwindow::on_event_name_textChanged(const QString &arg1){filter_events();}
 void adminwindow::on_event_both_clicked()                       {filter_events();}
 void adminwindow::on_event_notaccepted_clicked()                {filter_events();}
@@ -334,6 +362,9 @@ void adminwindow::on_event_accepted_clicked()                   {filter_events()
 void adminwindow::on_date_from_editingFinished()                {filter_events();}
 void adminwindow::on_date_to_editingFinished()                  {filter_events();}
 
+void adminwindow::on_image_waiting_clicked()                    {filter_images();}
+void adminwindow::on_image_accepted_clicked()                   {filter_images();}
+void adminwindow::on_image_both_clicked()                       {filter_images();}
 
 void adminwindow::on_event_add_clicked(){
     addeventdialog* event_dialog = new addeventdialog();
@@ -353,22 +384,19 @@ void adminwindow::on_back_clicked(){
         ui->image_list->model()->removeRows(0, ui->event_list->rowCount());
 }
 
-
-void adminwindow::on_event_list_itemSelectionChanged(){
-   /* while(get_selectedevents().isEmpty() && (!ui->event_delete->isEnabled() || !ui->event_accept->isEnabled())){
-        ui->event_delete->setEnabled(true);
-        ui->event_accept->setEnabled(true);
-    }
-    if(!get_selectedevents().isEmpty())
-    for(auto iterator : get_selectedevents())
-        if(eventpointer_list.at(iterator)->isAccepted()){
-            qDebug() << iterator;
-            ui->event_delete->setEnabled(false);
-            ui->event_accept->setEnabled(false);
-            return;
-    }
-    while(!ui->event_delete->isEnabled() || !ui->event_accept->isEnabled()){
-        ui->event_delete->setEnabled(true);
-        ui->event_accept->setEnabled(true);
-    }*/
+void adminwindow::on_image_upload_clicked(){
+    image_upload_filedialog();
 }
+
+void adminwindow::on_image_accept_clicked(){
+    if(!get_selectedimages().empty())
+        accept_images(get_selectedimages());
+}
+
+void adminwindow::on_image_delete_clicked(){
+    if(!get_selectedimages().empty())
+        delete_images(get_selectedimages());
+}
+
+
+

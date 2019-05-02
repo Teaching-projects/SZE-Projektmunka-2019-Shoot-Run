@@ -28,6 +28,7 @@ public:
 	void Accept();
     void loadfrompath();
     QByteArray getBlob();
+    bool isAccepted();
 private:
 	friend class odb::access;
 #pragma db id auto

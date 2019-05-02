@@ -32,6 +32,18 @@ namespace odb
     ODB_POTENTIALLY_UNUSED (x);
     ODB_POTENTIALLY_UNUSED (e);
   }
+
+  // image_per_event
+  //
+
+  inline
+  void access::view_traits< ::image_per_event >::
+  callback (database& db, view_type& x, callback_event e)
+  {
+    ODB_POTENTIALLY_UNUSED (db);
+    ODB_POTENTIALLY_UNUSED (x);
+    ODB_POTENTIALLY_UNUSED (e);
+  }
 }
 
 namespace odb
@@ -47,5 +59,8 @@ namespace odb
     erase (db, id (obj));
     callback (db, obj, callback_event::post_erase);
   }
+
+  // image_per_event
+  //
 }
 

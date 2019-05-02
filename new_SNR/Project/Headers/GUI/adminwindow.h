@@ -25,7 +25,8 @@ private slots:
     void on_event_delete_clicked();
     void on_event_filterreset_clicked();
     void on_event_list_itemDoubleClicked(QTableWidgetItem *item);
-
+    void on_event_add_clicked();
+    void on_back_clicked();
 
 void on_event_name_textChanged(const QString &arg1);
 void on_event_both_clicked();
@@ -36,14 +37,23 @@ void on_date_to_editingFinished();
 
 
 
-void on_event_add_clicked();
 
 
 
-void on_back_clicked();
+void on_image_upload_clicked();
 
+void on_image_accept_clicked();
 
-void on_event_list_itemSelectionChanged();
+void on_image_delete_clicked();
+
+void on_image_waiting_clicked();
+
+void on_image_accepted_clicked();
+
+void on_image_both_clicked();
+
+void on_event_refresh_clicked();
+
 
 private:
     Ui::adminwindow *ui;
@@ -55,9 +65,10 @@ private:
     void            delete_images(QList<int>);
     void            load_images();
     void            loadfrom_imagepointer();
+    void            loadfrom_blob(QPixmap*,QByteArray);
     void            filter_images();
     void            image_upload_filedialog();
-    void            image_upload(QString);
+    static void     image_upload(QString,int,QList<image*>*);
 //event
     QList<odbevent*>    eventpointer_list;
     QList<int>          get_selectedevents();
@@ -67,9 +78,8 @@ private:
     void                loadfrom_eventpointer();
     void                filter_events();
 
+void set_options();
 
-
-    void set_options();
 
 };
 

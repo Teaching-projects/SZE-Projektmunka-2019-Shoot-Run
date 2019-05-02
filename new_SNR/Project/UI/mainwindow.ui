@@ -83,7 +83,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="Login">
       <property name="enabled">
@@ -333,13 +333,13 @@
   <tabstop>login_username</tabstop>
   <tabstop>login_password</tabstop>
   <tabstop>login_ok</tabstop>
+  <tabstop>register_back</tabstop>
   <tabstop>register_username</tabstop>
   <tabstop>register_password</tabstop>
   <tabstop>register_email</tabstop>
   <tabstop>register_firstname</tabstop>
   <tabstop>register_lastname</tabstop>
   <tabstop>register_ok</tabstop>
-  <tabstop>register_back</tabstop>
  </tabstops>
  <resources/>
  <connections/>

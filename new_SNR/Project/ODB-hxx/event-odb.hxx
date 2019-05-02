@@ -53,6 +53,8 @@
 #include <odb/cache-traits.hxx>
 #include <odb/result.hxx>
 #include <odb/simple-object-result.hxx>
+#include <odb/view-image.hxx>
+#include <odb/view-result.hxx>
 
 #include <odb/details/unused.hxx>
 #include <odb/details/shared-ptr.hxx>
@@ -103,6 +105,25 @@ namespace odb
 
     static void
     callback (database&, const object_type&, callback_event);
+  };
+
+  // image_per_event
+  //
+  template <>
+  struct class_traits< ::image_per_event >
+  {
+    static const class_kind kind = class_view;
+  };
+
+  template <>
+  class access::view_traits< ::image_per_event >
+  {
+    public:
+    typedef ::image_per_event view_type;
+    typedef ::QSharedPointer< ::image_per_event > pointer_type;
+
+    static void
+    callback (database&, view_type&, callback_event);
   };
 }
 
@@ -502,6 +523,68 @@ namespace odb
   {
   };
 
+  // image_per_event
+  //
+  template <>
+  class access::view_traits_impl< ::image_per_event, id_mysql >:
+    public access::view_traits< ::image_per_event >
+  {
+    public:
+    struct image_type
+    {
+      // accepted
+      //
+      signed char accepted_value;
+      my_bool accepted_null;
+
+      // event_id
+      //
+      unsigned int event_id_value;
+      my_bool event_id_null;
+
+      // count
+      //
+      unsigned long long count_value;
+      my_bool count_null;
+
+      std::size_t version;
+    };
+
+    typedef mysql::view_statements<view_type> statements_type;
+
+    typedef mysql::query_base query_base_type;
+    struct query_columns;
+
+    static const bool versioned = false;
+
+    static bool
+    grow (image_type&,
+          my_bool*);
+
+    static void
+    bind (MYSQL_BIND*,
+          image_type&);
+
+    static void
+    init (view_type&,
+          const image_type&,
+          database*);
+
+    static const std::size_t column_count = 3UL;
+
+    static query_base_type
+    query_statement (const query_base_type&);
+
+    static result<view_type>
+    query (database&, const query_base_type&);
+  };
+
+  template <>
+  class access::view_traits_impl< ::image_per_event, id_common >:
+    public access::view_traits_impl< ::image_per_event, id_mysql >
+  {
+  };
+
   // odbevent
   //
   template <>
@@ -648,6 +731,29 @@ namespace odb
   const typename query_columns< ::odbevent, id_mysql, A >::submitter_id_type_
   query_columns< ::odbevent, id_mysql, A >::
   submitter_id (A::table_name, "`submitter_id`", 0);
+
+  // image_per_event
+  //
+  struct access::view_traits_impl< ::image_per_event, id_mysql >::query_columns
+  {
+    // odbevent
+    //
+    typedef
+    odb::pointer_query_columns<
+      ::odbevent,
+      id_mysql,
+      odb::access::object_traits_impl< ::odbevent, id_mysql > >
+    odbevent;
+
+    // image
+    //
+    typedef
+    odb::pointer_query_columns<
+      ::image,
+      id_mysql,
+      odb::access::object_traits_impl< ::image, id_mysql > >
+    image;
+  };
 }
 
 #include "event-odb.ixx"

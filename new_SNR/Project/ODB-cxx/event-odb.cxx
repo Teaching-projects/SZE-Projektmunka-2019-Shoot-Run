@@ -21,9 +21,11 @@
 #include <odb/mysql/statement.hxx>
 #include <odb/mysql/statement-cache.hxx>
 #include <odb/mysql/simple-object-statements.hxx>
+#include <odb/mysql/view-statements.hxx>
 #include <odb/mysql/container-statements.hxx>
 #include <odb/mysql/exceptions.hxx>
 #include <odb/mysql/simple-object-result.hxx>
+#include <odb/mysql/view-result.hxx>
 #include <odb/mysql/enum.hxx>
 
 namespace odb
@@ -1201,6 +1203,195 @@ namespace odb
       q.parameters_binding ());
 
     return st.execute ();
+  }
+
+  // image_per_event
+  //
+
+  bool access::view_traits_impl< ::image_per_event, id_mysql >::
+  grow (image_type& i,
+        my_bool* t)
+  {
+    ODB_POTENTIALLY_UNUSED (i);
+    ODB_POTENTIALLY_UNUSED (t);
+
+    bool grew (false);
+
+    // accepted
+    //
+    t[0UL] = 0;
+
+    // event_id
+    //
+    t[1UL] = 0;
+
+    // count
+    //
+    t[2UL] = 0;
+
+    return grew;
+  }
+
+  void access::view_traits_impl< ::image_per_event, id_mysql >::
+  bind (MYSQL_BIND* b,
+        image_type& i)
+  {
+    using namespace mysql;
+
+    mysql::statement_kind sk (statement_select);
+    ODB_POTENTIALLY_UNUSED (sk);
+
+    std::size_t n (0);
+
+    // accepted
+    //
+    b[n].buffer_type = MYSQL_TYPE_TINY;
+    b[n].is_unsigned = 0;
+    b[n].buffer = &i.accepted_value;
+    b[n].is_null = &i.accepted_null;
+    n++;
+
+    // event_id
+    //
+    b[n].buffer_type = MYSQL_TYPE_LONG;
+    b[n].is_unsigned = 1;
+    b[n].buffer = &i.event_id_value;
+    b[n].is_null = &i.event_id_null;
+    n++;
+
+    // count
+    //
+    b[n].buffer_type = MYSQL_TYPE_LONGLONG;
+    b[n].is_unsigned = 1;
+    b[n].buffer = &i.count_value;
+    b[n].is_null = &i.count_null;
+    n++;
+  }
+
+  void access::view_traits_impl< ::image_per_event, id_mysql >::
+  init (view_type& o,
+        const image_type& i,
+        database* db)
+  {
+    ODB_POTENTIALLY_UNUSED (o);
+    ODB_POTENTIALLY_UNUSED (i);
+    ODB_POTENTIALLY_UNUSED (db);
+
+    // accepted
+    //
+    {
+      bool& v =
+        o.accepted;
+
+      mysql::value_traits<
+          bool,
+          mysql::id_tiny >::set_value (
+        v,
+        i.accepted_value,
+        i.accepted_null);
+    }
+
+    // event_id
+    //
+    {
+      unsigned int& v =
+        o.event_id;
+
+      mysql::value_traits<
+          unsigned int,
+          mysql::id_ulong >::set_value (
+        v,
+        i.event_id_value,
+        i.event_id_null);
+    }
+
+    // count
+    //
+    {
+      ::std::size_t& v =
+        o.count;
+
+      mysql::value_traits<
+          ::std::size_t,
+          mysql::id_ulonglong >::set_value (
+        v,
+        i.count_value,
+        i.count_null);
+    }
+  }
+
+  access::view_traits_impl< ::image_per_event, id_mysql >::query_base_type
+  access::view_traits_impl< ::image_per_event, id_mysql >::
+  query_statement (const query_base_type& q)
+  {
+    query_base_type r (
+      "SELECT "
+      "`image`.`image_accepted`, "
+      "`image`.`event_id`, "
+      "count(`image`.`event_id`) ");
+
+    r += "FROM `odbevent`";
+
+    r += " LEFT JOIN `image` ON";
+    r += "`image`.`event_id`=`odbevent`.`event_id`";
+
+    query_base_type c (
+      // From event.h:54:5
+      (q.empty () ? query_base_type::true_expr : q) + "GROUP BY" + query_columns::image::event_id);
+
+    c.optimize ();
+
+    if (!c.empty ())
+    {
+      r += " ";
+      r += c.clause_prefix ();
+      r += c;
+    }
+
+    return r;
+  }
+
+  result< access::view_traits_impl< ::image_per_event, id_mysql >::view_type >
+  access::view_traits_impl< ::image_per_event, id_mysql >::
+  query (database&, const query_base_type& q)
+  {
+    using namespace mysql;
+    using odb::details::shared;
+    using odb::details::shared_ptr;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_view<view_type> ());
+
+    image_type& im (sts.image ());
+    binding& imb (sts.image_binding ());
+
+    if (im.version != sts.image_version () || imb.version == 0)
+    {
+      bind (imb.bind, im);
+      sts.image_version (im.version);
+      imb.version++;
+    }
+
+    const query_base_type& qs (query_statement (q));
+    qs.init_parameters ();
+    shared_ptr<select_statement> st (
+      new (shared) select_statement (
+        conn,
+        qs.clause (),
+        false,
+        true,
+        qs.parameters_binding (),
+        imb));
+
+    st->execute ();
+
+    shared_ptr< odb::view_result_impl<view_type> > r (
+      new (shared) mysql::view_result_impl<view_type> (
+        qs, st, sts, 0));
+
+    return result<view_type> (r);
   }
 }
 

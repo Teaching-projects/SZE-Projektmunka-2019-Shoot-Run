@@ -195,7 +195,6 @@ int picturelist::upload_track(QString path_Q,int current_event_int,std::string c
     odb::session s;
     typedef odb::query<odbevent> event_query;
     typedef odb::query<user>     user_query;
-
     QSharedPointer<odbevent> current_event = db->query_one<odbevent>(event_query::event_id == current_event_int);
     QSharedPointer<user> current_user = db->query_one<user>(user_query::user_name == current_user_string);
     QSharedPointer<track> new_track(new track(current_event, current_user));

@@ -34,3 +34,7 @@ void image::loadfrompath(){
 QByteArray image::getBlob(){
     return this->blob;
 }
+
+bool image::isAccepted(){
+    return image_accepted;
+}

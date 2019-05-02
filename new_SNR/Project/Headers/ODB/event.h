@@ -50,6 +50,17 @@ private:
 	QLazySharedPointer<user_type> submitter_id;
 };
 
+#pragma db view object(odbevent) object(image) \
+    query ((?) + "GROUP BY" + image::event_id)
+struct image_per_event{
+    #pragma db column(image::image_accepted)
+    bool accepted;
+    #pragma db column(image::event_id)
+    unsigned int event_id;
+    #pragma db column("count(" + image::event_id + ")")
+    std::size_t count;
+};
+
 #ifdef ODB_COMPILER
 #include "track.h"
 #include "image.h"
