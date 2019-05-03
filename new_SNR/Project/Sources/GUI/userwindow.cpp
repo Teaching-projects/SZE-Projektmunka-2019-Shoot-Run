@@ -30,22 +30,22 @@ userwindow::userwindow(QWidget *parent) : QWidget(parent), ui(new Ui::userwindow
     QSettings setting("MYDATA", "SNR");
     setting.beginGroup("TEST");
     current_user_string = setting.value("current_user").toString().toStdString();
+    current_user_int = setting.value("current_user_id").toString().toInt();
     setting.endGroup();
     ui->event_list->horizontalHeader()->setVisible(true);
-    ui->event_list->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     ui->stackedWidget->setCurrentIndex(0);
-
-    ui->image_list->setViewMode(QListWidget::IconMode);
-    ui->image_list->setResizeMode(QListWidget::Adjust);
-
     load_events();
     loadfrom_eventpointer();
     set_options();
-
-
 }
 
 userwindow::~userwindow(){
+    if(!imagepointer_list.isEmpty())
+        this->imagepointer_list.clear();
+    if(!eventpointer_list.isEmpty())
+        this->eventpointer_list.clear();
+    if(!tardispointer_list.isEmpty())
+        this->tardispointer_list.clear();
     delete ui;
 }
 
@@ -88,45 +88,57 @@ void userwindow::on_image_track_upload_clicked(){
 }
 
 void userwindow::on_image_search_clicked(){
-    ui->image_list->clear();
-    QList<int> lista;
-    int index = 0;
-    for(auto i : tardispointer_list){
-        for(int index=0;index<imagepointer_list.size();index++)
-            if(i->getDate().addSecs(-7)<= imagepointer_list.at(index)->getDate() && imagepointer_list.at(index)->getDate() <= i->getDate().addSecs(7)){
-                double lat1r, lon1r, lat2r, lon2r, u, v;
-                lat1r = (((i->getLatitude())*3.14))/180;
-                lon1r = (((i->getLongitude())*3.14))/180;
-                lat2r = (((imagepointer_list.at(index)->getLatitude())*3.14))/180;
-                lon2r = (((imagepointer_list.at(index)->getLongitude())*3.14))/180;
-                u = sin((lat2r - lat1r)/2);
-                v = sin((lon2r - lon1r)/2);
-                if((2.0 * 6371.0 * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v))*1000)<20){
-                lista << index;
-                qDebug() << imagepointer_list.at(index)->getDate() << "\t\t" << 2.0 * 6371.0 * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v))*1000;
-                }
+    if(ui->label->text() != "Track available")
+        return;
+    for(int iterator = 0; iterator < ui->image_list->model()->rowCount(); iterator++)
+        ui->image_list->item(iterator)->setHidden(true);
+    int time = ui->slider_time->value();
+    double distance_ = ui->slider_distance->value();
+    for(int i=0, j=0; j<imagepointer_list.size() && i<tardispointer_list.size();){
+        if((tardispointer_list[i]->getDate() >= imagepointer_list[j]->getDate().addSecs((time * -1))) && (tardispointer_list[i]->getDate() <= imagepointer_list[j]->getDate().addSecs(time))){
+            if(distance(imagepointer_list[j],tardispointer_list[i]) < distance_){
+                if(ui->image_list->item(j)->isHidden())
+                    ui->image_list->item(j)->setHidden(false);
+                if(tardispointer_list[i]->getDate()>imagepointer_list[j]->getDate())
+                    j++;
+                else if(tardispointer_list[i]->getDate()<imagepointer_list[j]->getDate())
+                    i++;
+                else
+                    i++;
             }
-            index++;
+            else{
+                if(tardispointer_list[i]->getDate()>imagepointer_list[j]->getDate())
+                    j++;
+                else if(tardispointer_list[i]->getDate()<imagepointer_list[j]->getDate())
+                    i++;
+                else
+                    i++;
+            }
+        }
+    else if(tardispointer_list[i]->getDate()<imagepointer_list[j]->getDate())
+        i++;
+    else if(tardispointer_list[i]->getDate()>imagepointer_list[j]->getDate())
+        j++;
     }
-    QSet<int> eredmeny = lista.toSet();
-    for(auto i : eredmeny){
-        QPixmap imagefrom;
-        imagefrom.loadFromData(imagepointer_list.at(i)->getBlob());
-        ui->image_list->addItem(new QListWidgetItem(QIcon(imagefrom),""));
-                qDebug() << i<<"\t\t"<<eredmeny.count();
-   }
 }
 
 void userwindow::on_event_list_itemDoubleClicked(QTableWidgetItem *item){
      last_clicked_row = item->row();
+     if(!eventpointer_list.at(last_clicked_row)->isAccepted())
+         return;
      load_images();
      loadfrom_imagepointer();
-     isthereatrack();
+     if(isthereatrack()){
+         ui->label->setText("Track available");
+         load_track();
+     }
+     else
+         ui->label->setText("No track available");
      ui->stackedWidget->setCurrentIndex(1);
 }
 
 void userwindow::image_upload_filedialog(){
-    QStringList file_names = QFileDialog::getOpenFileNames(this, "Select the picture", QDir::homePath());
+    QStringList file_names = QFileDialog::getOpenFileNames(this, "Select the picture", QDir::homePath(),tr("Images (*.png *.jpg)"));
     for (int i = 0; i < file_names.size(); ++i){
         image_upload(file_names.at(i),eventpointer_list.at(last_clicked_row)->getId(),current_user_string, &imagepointer_list);
         QPixmap image_;
@@ -154,7 +166,7 @@ void userwindow::load_events(){
     typedef odb::result<odbevent> result;
     odb::core::session s;
     odb::core::transaction t(db->begin());
-    result r(db->query<odbevent>(query::event_accepted == true));
+    result r(db->query<odbevent>(query::event_accepted == true || query::submitter_id == current_user_int));
     for (result::iterator iterator(r.begin()); iterator != r.end(); ++iterator)
         eventpointer_list << new odbevent(*iterator);
     t.commit();
@@ -170,9 +182,33 @@ void userwindow::load_images(){
     typedef odb::result<image>  result;
     odb::core::session s;
     odb::core::transaction t(db->begin());
-    result r(db->query<image>((query::event_id == eventpointer_list.at(last_clicked_row)->getId() && query::image_accepted == true) + "ORDER BY" + query::image_date + "ASC"));
+    result r(db->query<image>((query::event_id == eventpointer_list.at(last_clicked_row)->getId() && (query::user_id == current_user_int || query::image_accepted == true)) + "ORDER BY" + query::image_date + "ASC"));
     for (auto value : r)
         imagepointer_list << new image(value);
+    t.commit();
+}
+
+void userwindow::load_track(){
+    if(!tardispointer_list.isEmpty())
+        this->tardispointer_list.clear();
+    QSharedPointer<odb::core::database> db = DB::create_database();
+    odb::core::transaction t(db->begin());
+    odb::session s;
+    typedef odb::query<track>	track_query;
+    typedef odb::query<user>	user_query;
+    typedef odb::query<tardis>	tardis_query;
+    typedef odb::result<tardis>	tardis_result;
+    QSharedPointer<user> current_user = db->query_one<user>(user_query::user_name == current_user_string);
+    QSharedPointer<track> result_track = db->query_one<track>(track_query::user_id == current_user->getID() && track_query::event_id == eventpointer_list.at(last_clicked_row)->getId());
+    if(result_track.get() != nullptr){
+        int track_id = result_track->getID();
+        tardis_result r(db->query<tardis>((tardis_query::track_id == track_id) + "ORDER BY" + tardis_query::tardis_date + "ASC"));
+        QDateTime last_date;
+        for(auto iterator : r)
+            if(last_date != iterator.getDate())
+                tardispointer_list << new tardis(iterator);
+        ui->label->setText("Track available");
+    }
     t.commit();
 }
 
@@ -180,7 +216,10 @@ void userwindow::loadfrom_imagepointer(){
     QPixmap imagefrom;
     for (auto iterator : imagepointer_list){
         loadfrom_blob(&imagefrom , iterator->getBlob());
-        ui->image_list->addItem(new QListWidgetItem(QIcon(imagefrom), ""));
+        if(iterator->isAccepted())
+            ui->image_list->addItem(new QListWidgetItem(QIcon(imagefrom), ""));
+        else
+            ui->image_list->addItem(new QListWidgetItem(QIcon(imagefrom), "Not accepted"));
     }
 }
 
@@ -203,6 +242,8 @@ void userwindow::loadfrom_eventpointer(){
         for(result::iterator i (count.begin ()); i != count.end (); ++i)
             if(iterator->getId() == static_cast<int>(i->event_id))
                 ui->event_list->item(row,1)->setText(QString(date.append("\tImages: ").append(QString::number(static_cast<int>(i->count)))));
+        if(!iterator->isAccepted())
+            ui->event_list->item(row,1)->setText(QString(date.append("\tNot accepted")));
         t.commit ();
         row++;
     }
@@ -269,12 +310,11 @@ int userwindow::upload_track(QString path_Q,int current_event_int,std::string cu
 }
 
 void userwindow::open_track_filedialog(){//TODO
-    QString file_name = QFileDialog::getOpenFileName(this, "Select the track", QDir::homePath());
+    QString file_name = QFileDialog::getOpenFileName(this, "Select the track", QDir::homePath(),tr("Tracks (*.gpx)"));
     if(isthereatrack())
         delete_track();
     QFuture<void> future = QtConcurrent::run(upload_track, file_name, eventpointer_list.at(last_clicked_row)->getId(),current_user_string);
-    //if(future.isFinished())
-        //ui->track_info->setText("Track available");
+    ui->label->setText("Track available");
     //upload_track(file_name);
 }
 
@@ -326,7 +366,6 @@ void userwindow::image_upload(QString filename, int current_event_id,std::string
     QSharedPointer<user>         current_user  = db->query_one<user>(u_query::user_name == current_user_string);
     QSharedPointer<odbevent>     current_event = db->query_one<odbevent>(e_query::event_id == current_event_id);
     QSharedPointer<image> new_image(new image(filename.toStdString(), current_event, current_user, date, result.GeoLocation.Longitude, result.GeoLocation.Latitude));
-    new_image->Accept();
     db->persist(new_image);
     new_image->user(current_user);
     new_image->odbevent(current_event);
@@ -357,9 +396,6 @@ QString userwindow::GetRandomString(){
 
 void userwindow::on_image_download_clicked(){
     QString file_name = QFileDialog::getExistingDirectory(0, ("Select download folder"), QDir::currentPath());
-            //QFileDialog::getOpenFileName(this, "Select the picture", QDir::homePath());
-    //if(!QDir(file_name).exists())
-        //QDir().mkdir(file_name);
     for(auto iterator : get_selectedimages()){
         QString randomfilename(file_name);
         randomfilename.append("/").append(GetRandomString()).append(".png");
@@ -377,18 +413,52 @@ int userwindow::isthereatrack(){
     odb::session s;
     typedef odb::query<track>	track_query;
     typedef odb::query<user>	user_query;
-    typedef odb::query<tardis>	tardis_query;
-    typedef odb::result<tardis>	tardis_result;
     QSharedPointer<user> current_user = db->query_one<user>(user_query::user_name == current_user_string);
     QSharedPointer<track> result_track = db->query_one<track>(track_query::user_id == current_user->getID() && track_query::event_id == eventpointer_list.at(last_clicked_row)->getId());
     if(result_track.get() != nullptr){
-        int track_id = result_track->getID();
-        tardis_result r(db->query<tardis>((tardis_query::track_id == track_id) + "ORDER BY" + tardis_query::tardis_date + "ASC"));
-        QDateTime last_date;
-        for(auto iterator : r)
-            if(last_date != iterator.getDate())
-                tardispointer_list << new tardis(iterator);
+        t.commit();
         return 1;
     }
+    t.commit();
     return 0;
+}
+
+void userwindow::on_image_track_refresh_clicked(){
+    if(isthereatrack()){
+        ui->label->setText("Track available");
+        load_track();
+    }
+    else
+        ui->label->setText("No track available");
+}
+
+void userwindow::on_event_refresh_clicked(){
+    load_events();
+    loadfrom_eventpointer();
+}
+
+void userwindow::on_slider_distance_sliderMoved(int position){
+    ui->label_distance->setText(QString("Distance: ").append(QString::number(position)).append("m"));
+    on_image_search_clicked();
+}
+
+void userwindow::on_slider_time_sliderMoved(int position){
+    ui->label_time->setText(QString("Time: ").append(QString::number(position)).append("s"));
+    on_image_search_clicked();
+}
+
+void userwindow::on_pushButton_clicked(){
+    for(int iterator = 0; iterator < ui->event_list->rowCount(); iterator++)
+        ui->image_list->item(iterator)->setHidden(false);
+}
+
+double userwindow::distance(image * image, tardis * tardis){
+    double lat1r, lon1r, lat2r, lon2r, u, v;
+    lat1r = (((image->getLatitude())*3.14))/180;
+    lon1r = (((image->getLongitude())*3.14))/180;
+    lat2r = (((tardis->getLatitude())*3.14))/180;
+    lon2r = (((tardis->getLongitude())*3.14))/180;
+    u = sin((lat2r - lat1r)/2);
+    v = sin((lon2r - lon1r)/2);
+    return 2.0 * 6371.0 * asin(sqrt(u * u + cos(lat1r) * cos(lat2r) * v * v))*1000;
 }

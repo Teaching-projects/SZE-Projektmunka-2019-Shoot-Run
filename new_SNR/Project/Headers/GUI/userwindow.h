@@ -35,9 +35,23 @@ private slots:
 
     void on_image_download_clicked();
 
+    void on_image_track_refresh_clicked();
+
+    void on_event_refresh_clicked();
+
+    void on_slider_distance_sliderMoved(int position);
+
+    void on_slider_time_sliderMoved(int position);
+
+    void on_pushButton_clicked();
+
 private:
     Ui::userwindow*     ui;
     std::string         current_user_string;
+    int                 current_user_int;
+    void set_options();
+    QString             GetRandomString();
+    double              distance(image*,tardis*);
 //image
     int                 last_clicked_row = -1;
     QList<image*>       imagepointer_list;
@@ -54,15 +68,12 @@ private:
     void                load_events();
     void                loadfrom_eventpointer();
     void                filter_events();
-
-    void set_options();
-    QString             GetRandomString();
-
 //track
     static int          upload_track(QString,int,std::string);
     void                open_track_filedialog();
     int                 isthereatrack();
     void                delete_track();
+    void                load_track();
 //tardis
     QList<tardis*>      tardispointer_list;
 };

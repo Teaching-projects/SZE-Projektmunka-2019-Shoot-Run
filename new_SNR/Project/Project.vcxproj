@@ -19,9 +19,8 @@
     <ClCompile Include="Sources\exif.cpp" />
     <ClCompile Include="Sources\GUI\addeventdialog.cpp" />
     <ClCompile Include="Sources\GUI\adminwindow.cpp" />
-    <ClCompile Include="Sources\GUI\eventwindow.cpp" />
     <ClCompile Include="Sources\GUI\mainwindow.cpp" />
-    <ClCompile Include="Sources\GUI\picturelist.cpp" />
+    <ClCompile Include="Sources\GUI\userwindow.cpp" />
     <ClCompile Include="Sources\main.cpp" />
     <ClCompile Include="Sources\ODB\event.cpp" />
     <ClCompile Include="Sources\ODB\image.cpp" />
@@ -36,16 +35,16 @@
     <QtMoc Include="Headers\GUI\adminwindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Headers\GUI\eventwindow.h" />
-  </ItemGroup>
-  <ItemGroup>
     <QtMoc Include="Headers\GUI\mainwindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Headers\GUI\picturelist.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Headers\exif.h" />
+    <QtMoc Include="Headers\GUI\userwindow.h">
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent</IncludePath>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent</IncludePath>
+    </QtMoc>
     <ClInclude Include="Headers\ODB\database.h" />
     <ClInclude Include="Headers\ODB\event.h" />
     <ClInclude Include="Headers\ODB\image.h" />
@@ -59,7 +58,6 @@
     <ClInclude Include="ODB-hxx\user-odb.hxx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Files\track.gpx" />
     <None Include="ODB-ixx\event-odb.ixx" />
     <None Include="ODB-ixx\image-odb.ixx" />
     <None Include="ODB-ixx\tardis-odb.ixx" />
@@ -74,9 +72,11 @@
   <ItemGroup>
     <QtUic Include="UI\addeventdialog.ui" />
     <QtUic Include="UI\adminwindow.ui" />
-    <QtUic Include="UI\eventwindow.ui" />
     <QtUic Include="UI\mainwindow.ui" />
-    <QtUic Include="UI\picturelist.ui" />
+    <QtUic Include="UI\userwindow.ui">
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\ui_%(Filename).h</OutputFile>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h</OutputFile>
+    </QtUic>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
@@ -127,7 +127,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_SECURE_NO_DEPRECATE;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_CONCURRENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;.\GeneratedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -144,7 +144,7 @@
     <QtMoc>
       <OutputFile>$(SolutionDir)GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;.\GeneratedFiles;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_SECURE_NO_DEPRECATE;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_CONCURRENT_LIB;%(PreprocessorDefinitions)</Define>
     </QtMoc>
     <QtUic>
@@ -160,7 +160,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_SECURE_NO_DEPRECATE;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_CONCURRENT_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;.\GeneratedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -176,7 +176,7 @@
     <QtMoc>
       <OutputFile>$(SolutionDir)GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>$(SolutionDir)GeneratedFiles;.;$(QTDIR)\include;$(SolutionDir)GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtConcurrent;.\GeneratedFiles;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_SECURE_NO_DEPRECATE;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_CONCURRENT_LIB;%(PreprocessorDefinitions)</Define>
     </QtMoc>
     <QtUic>

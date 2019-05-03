@@ -9,10 +9,9 @@ SOURCES += \
     $$PWD/Sources/main.cpp \
     $$PWD/Sources/exif.cpp \
     $$PWD/Sources/GUI/mainwindow.cpp \
-    $$PWD/Sources/GUI/eventwindow.cpp \
     $$PWD/Sources/GUI/addeventdialog.cpp \
     $$PWD/Sources/GUI/adminwindow.cpp \
-    $$PWD/Sources/GUI/picturelist.cpp \
+    $$PWD/Sources/GUI/userwindow.cpp \
     $$PWD/Sources/ODB/event.cpp \
     $$PWD/Sources/ODB/image.cpp \
     $$PWD/Sources/ODB/tardis.cpp \
@@ -22,17 +21,14 @@ SOURCES += \
     $$PWD/ODB-cxx/image-odb.cxx \
     $$PWD/ODB-cxx/tardis-odb.cxx \
     $$PWD/ODB-cxx/track-odb.cxx \
-    $$PWD/ODB-cxx/user-odb.cxx \
-    $$PWD/Sources/GUI/userwindow.cpp
-
+    $$PWD/ODB-cxx/user-odb.cxx
 
 HEADERS += \
     $$PWD/Headers/exif.h \
     $$PWD/Headers/GUI/mainwindow.h \
-    $$PWD/Headers/GUI/eventwindow.h \
     $$PWD/Headers/GUI/addeventdialog.h \
     $$PWD/Headers/GUI/adminwindow.h \
-    $$PWD/Headers/GUI/picturelist.h \
+    $$PWD/Headers/GUI/userwindow.h \
     $$PWD/Headers/ODB/database.h \
     $$PWD/Headers/ODB/event.h \
     $$PWD/Headers/ODB/image.h \
@@ -43,15 +39,12 @@ HEADERS += \
     $$PWD/ODB-hxx/image-odb.hxx \
     $$PWD/ODB-hxx/tardis-odb.hxx \
     $$PWD/ODB-hxx/track-odb.hxx \
-    $$PWD/ODB-hxx/user-odb.hxx \
-    $$PWD/Headers/GUI/userwindow.h
+    $$PWD/ODB-hxx/user-odb.hxx
 
 FORMS += \
     $$PWD/UI/mainwindow.ui \
-    $$PWD/UI/eventwindow.ui \
     $$PWD/UI/addeventdialog.ui \
     $$PWD/UI/adminwindow.ui \
-    $$PWD/UI/picturelist.ui \
     $$PWD/UI/userwindow.ui
 
 
@@ -125,9 +118,7 @@ DISTFILES += \
     $$PWD/ODB-ixx/image-odb.ixx \
     $$PWD/ODB-ixx/tardis-odb.ixx \
     $$PWD/ODB-ixx/track-odb.ixx \
-    $$PWD/ODB-ixx/user-odb.ixx \
-    $$PWD/Files/track.gpx \
-    $$PWD/Files/android.jpg
+    $$PWD/ODB-ixx/user-odb.ixx
 
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

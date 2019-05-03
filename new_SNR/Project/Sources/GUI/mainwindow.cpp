@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-//#include "eventwindow.h"
 #include "adminwindow.h"
 #include "userwindow.h"
 
@@ -99,9 +98,13 @@ int mainwindow::user_correct(std::string user_name, std::string password){
     if (exists_name.get() != nullptr) {
         password_hash(password, exists_name->getRegistretionDate());
         QSharedPointer<user> q = db->query_one<user>(query::user_name == user_name && query::password == password);
-        if (q.get() != nullptr) {
+        if (q.get() != nullptr){
             if(q->isadmin())
                 is_admin = true;
+            QSettings setting("MYDATA", "SNR");
+            setting.beginGroup("TEST");
+            setting.setValue("current_user_id", q->getID());
+            setting.endGroup();
             return 1;
         }
     }

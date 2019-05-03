@@ -1,8 +1,6 @@
 #include "adminwindow.h"
 #include "ui_adminwindow.h"
 #include "mainwindow.h"
-#include "picturelist.h"
-#include "eventwindow.h"
 #include "addeventdialog.h"
 
 #include <QSettings>
@@ -27,18 +25,12 @@
 adminwindow::adminwindow(QWidget *parent) : QWidget(parent), ui(new Ui::adminwindow){
     ui->setupUi(this);
     ui->event_list->horizontalHeader()->setVisible(true);
-    ui->event_list->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     ui->stackedWidget->setCurrentIndex(0);
-
-    ui->image_list->setViewMode(QListWidget::IconMode);
-    ui->image_list->setResizeMode(QListWidget::Adjust);
-
     load_events();
     loadfrom_eventpointer();
     set_options();
     if(ui->event_accept->isEnabled())
         ui->event_accept->setEnabled(false);
-
 }
 
 adminwindow::~adminwindow(){
@@ -67,7 +59,7 @@ void adminwindow::on_exit_button_clicked(){
 }
 
 void adminwindow::image_upload_filedialog(){
-    QStringList file_names = QFileDialog::getOpenFileNames(this, "Select the picture", QDir::homePath());
+    QStringList file_names = QFileDialog::getOpenFileNames(this, "Select the picture", QDir::homePath(),tr("Images (*.png *.jpg)"));
     for (int i = 0; i < file_names.size(); ++i){
         image_upload(file_names.at(i),eventpointer_list.at(last_clicked_row)->getId(), &imagepointer_list);
         QPixmap image_;
@@ -139,6 +131,7 @@ void adminwindow::on_event_refresh_clicked(){
     set_options();
     load_events();
     loadfrom_eventpointer();
+    ui->event_both->setChecked(true);
 }
 
 void adminwindow::loadfrom_blob(QPixmap *image, QByteArray blob){
@@ -151,14 +144,17 @@ void adminwindow::loadfrom_eventpointer(){
     typedef odb::result<image_per_event>   result;
     int row=0;
     for (auto iterator : eventpointer_list){
-        odb::core::transaction t(db->begin());
-        result count (db->query<image_per_event>(query::image::image_accepted == false));
+        qDebug() << iterator->getId();
         QString date = iterator->getDate().toString("yyyy-MM-dd");
         ui->event_list->setRowCount(ui->event_list->rowCount() + 1);
         ui->event_list->setItem(row, 0, new QTableWidgetItem(iterator->getName()));
         ui->event_list->setItem(row, 1, new QTableWidgetItem(date));
+        odb::core::transaction t(db->begin());
+        result count(db->query<image_per_event>(query::image::image_accepted == false));
+        if(count.empty())
+            qDebug()<<"üres";
         for(result::iterator i (count.begin ()); i != count.end (); ++i){
-            qDebug() <<iterator->getId() << "\t"<< i->event_id;
+            qDebug() << iterator->getId() << "\t"<< i->event_id;
             if(iterator->getId() == static_cast<int>(i->event_id))
                 ui->event_list->item(row,1)->setText(QString(date.append("\tTo check: ").append(QString::number(static_cast<int>(i->count)))));
         }

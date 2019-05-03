@@ -27,9 +27,6 @@
     <Filter Include="ODB">
       <UniqueIdentifier>{7a4c2e92-a7b2-4a38-8bfb-f066034a8f9d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files">
-      <UniqueIdentifier>{6d351b6e-cada-4a44-a542-963f43983f82}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{6c8a41fc-89b7-4c2c-a5d7-04bbf493831e}</UniqueIdentifier>
     </Filter>
@@ -46,13 +43,7 @@
     <ClCompile Include="Sources\GUI\adminwindow.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\GUI\eventwindow.cpp">
-      <Filter>Sources\Gui</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\GUI\mainwindow.cpp">
-      <Filter>Sources\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\GUI\picturelist.cpp">
       <Filter>Sources\Gui</Filter>
     </ClCompile>
     <ClCompile Include="Sources\ODB\event.cpp">
@@ -91,6 +82,9 @@
     <ClCompile Include="ODB-cxx\user-odb.cxx">
       <Filter>ODB</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\GUI\userwindow.cpp">
+      <Filter>Sources\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Headers\GUI\addeventdialog.h">
@@ -99,13 +93,10 @@
     <QtMoc Include="Headers\GUI\adminwindow.h">
       <Filter>Headers\GUI</Filter>
     </QtMoc>
-    <QtMoc Include="Headers\GUI\eventwindow.h">
-      <Filter>Headers\GUI</Filter>
-    </QtMoc>
     <QtMoc Include="Headers\GUI\mainwindow.h">
       <Filter>Headers\GUI</Filter>
     </QtMoc>
-    <QtMoc Include="Headers\GUI\picturelist.h">
+    <QtMoc Include="Headers\GUI\userwindow.h">
       <Filter>Headers\GUI</Filter>
     </QtMoc>
   </ItemGroup>
@@ -178,9 +169,6 @@
     <None Include="ODB-sql\user.sql">
       <Filter>ODB</Filter>
     </None>
-    <None Include="Files\track.gpx">
-      <Filter>Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="UI\addeventdialog.ui">
@@ -189,13 +177,10 @@
     <QtUic Include="UI\adminwindow.ui">
       <Filter>UI</Filter>
     </QtUic>
-    <QtUic Include="UI\eventwindow.ui">
-      <Filter>UI</Filter>
-    </QtUic>
     <QtUic Include="UI\mainwindow.ui">
       <Filter>UI</Filter>
     </QtUic>
-    <QtUic Include="UI\picturelist.ui">
+    <QtUic Include="UI\userwindow.ui">
       <Filter>UI</Filter>
     </QtUic>
   </ItemGroup>
